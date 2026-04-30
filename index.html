@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -91,13 +91,15 @@ header{background:#1a1d27;padding:16px;display:flex;justify-content:space-betwee
 <div class="tabs">
   <button class="tab active" id="t0">📊 Resumen</button>
   <button class="tab" id="t1">🏪 Locales</button>
-  <button class="tab" id="t2">🔔 Alertas</button>
+  <button class="tab" id="t2">💸 Deudas</button>
+  <button class="tab" id="t3">🔔 Alertas</button>
 </div>
 
 <div class="main">
   <div id="tab0"></div>
   <div id="tab1" style="display:none"></div>
   <div id="tab2" style="display:none"></div>
+  <div id="tab3" style="display:none"></div>
 </div>
 
 <!-- CONFIRM -->
@@ -165,6 +167,44 @@ header{background:#1a1d27;padding:16px;display:flex;justify-content:space-betwee
   </div>
 </div>
 
+<!-- MODAL DEUDA -->
+<div class="overlay" id="mDeuda">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="mDeudaTit">Nueva Deuda</div>
+    <div class="fgrp"><label>Tipo</label>
+      <select id="dTipo">
+        <option value="propia">💸 Debo yo</option>
+        <option value="me-deben">💰 Me deben</option>
+        <option value="recordatorio">🔔 Recordatorio</option>
+      </select>
+    </div>
+    <div class="fgrp"><label>Nombre</label><input id="dNom" placeholder="Ej: Bancolombia"></div>
+    <div class="frow">
+      <div class="fgrp"><label>Total ($)</label><input id="dTotal" type="number" placeholder="0"></div>
+      <div class="fgrp"><label>Cuota ($)</label><input id="dCuota" type="number" placeholder="0"></div>
+    </div>
+    <div class="frow">
+      <div class="fgrp"><label>Interés (%)</label><input id="dInteres" type="number" placeholder="2.5" step="0.1"></div>
+      <div class="fgrp"><label>Día de pago</label><input id="dDia" type="number" placeholder="13" min="1" max="31"></div>
+    </div>
+    <div class="frow">
+      <div class="fgrp"><label>Cuotas pagadas</label><input id="dPagadas" type="number" placeholder="0"></div>
+      <div class="fgrp"><label>Total cuotas</label><input id="dTotalC" type="number" placeholder="24"></div>
+    </div>
+    <div class="fgrp"><label>Teléfono WA (opcional)</label><input id="dTel" type="tel" placeholder="3XX XXX XXXX"></div>
+    <div class="fgrp"><label>Notas</label><input id="dObs" placeholder="Observaciones..."></div>
+    <input type="hidden" id="dId">
+    <button class="btn-pri" id="btnGuardarDeuda">Guardar</button>
+    <button class="btn-sec" id="btnCancelarDeuda">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL DETALLE DEUDA -->
+<div class="overlay" id="mDeudaDet">
+  <div class="modal" id="mDeudaDetContent"></div>
+</div>
+
 <script>
 var SK = 'mis_locales_v1';
 var MEM = null;
@@ -208,7 +248,7 @@ function estadoLocal(l,pagos){
 // TABS
 function showTab(n) {
   tabActual=n;
-  for(var i=0;i<3;i++){
+  for(var i=0;i<4;i++){
     document.getElementById('t'+i).className='tab'+(i===n?' active':'');
     document.getElementById('tab'+i).style.display=i===n?'':'none';
   }
@@ -217,11 +257,13 @@ function showTab(n) {
 document.getElementById('t0').onclick=function(){showTab(0);};
 document.getElementById('t1').onclick=function(){showTab(1);};
 document.getElementById('t2').onclick=function(){showTab(2);};
+document.getElementById('t3').onclick=function(){showTab(3);};
 
 function render(){
   if(tabActual===0) renderResumen();
   if(tabActual===1) renderLocales();
-  if(tabActual===2) renderAlertas();
+  if(tabActual===2) renderDeudas();
+  if(tabActual===3) renderAlertas();
 }
 
 // RESUMEN
@@ -289,6 +331,165 @@ function renderLocales(){
   });
 }
 
+// DEUDAS
+function renderDeudas(){
+  var d=getData();
+  if(!d.deudas) d.deudas=[];
+  var propias=d.deudas.filter(function(x){return x.tipo==='propia';});
+  var meDeben=d.deudas.filter(function(x){return x.tipo==='me-deben';});
+  var recordatorios=d.deudas.filter(function(x){return x.tipo==='recordatorio';});
+  var totalDeuda=propias.reduce(function(s,x){return s+(Number(x.total)||0);},0);
+  var totalCuotas=propias.reduce(function(s,x){return s+(Number(x.cuota)||0);},0);
+  var totalArr=d.locales.filter(function(l){return l.arrendatario;}).reduce(function(s,l){return s+(Number(l.canon)||0);},0);
+  var libre=totalArr-totalCuotas;
+
+  var h='<div class="grid2">';
+  h+='<div class="card"><div class="lbl">Total deuda</div><div class="val red" style="font-size:1.1rem">'+fCOP(totalDeuda)+'</div></div>';
+  h+='<div class="card"><div class="lbl">Cuotas mes</div><div class="val red" style="font-size:1.1rem">'+fCOP(totalCuotas)+'</div></div>';
+  h+='<div class="card"><div class="lbl">Arriendos mes</div><div class="val green" style="font-size:1.1rem">'+fCOP(totalArr)+'</div></div>';
+  h+='<div class="card"><div class="lbl">Libre al mes</div><div class="val '+(libre>=0?'green':'red')+'" style="font-size:1.1rem">'+fCOP(libre)+'</div></div>';
+  h+='</div>';
+  h+='<button class="btn-wa-all" style="background:#ff4f6d" id="btnNuevaDeuda">+ Nueva deuda / Me deben / Recordatorio</button>';
+
+  if(propias.length>0){
+    h+='<div class="sec">💸 Lo que debo</div>';
+    propias.forEach(function(x){
+      var pag=Number(x.pagadas)||0, tot=Number(x.totalCuotas)||0;
+      var faltan=tot>0?tot-pag:null;
+      var pct=tot>0?Math.min(100,Math.round(pag/tot*100)):0;
+      h+='<div class="lcard vencido" data-did="'+x.id+'">';
+      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.interes?x.interes+'% mensual':'')+'</div></div><span class="badge pendiente">'+(faltan!==null?faltan+' cuotas':'')+'</span></div>';
+      h+='<div class="lcard-info"><div><div class="lbl2">Cuota</div><div class="val2">'+fCOP(x.cuota)+'</div></div><div><div class="lbl2">Día pago</div><div class="val2">Día '+(x.dia||'—')+'</div></div><div><div class="lbl2">Total</div><div class="val2">'+fCOP(x.total)+'</div></div>'+(faltan!==null?'<div><div class="lbl2">Pagadas</div><div class="val2">'+pag+' de '+tot+'</div></div>':'')+'</div>';
+      if(tot>0) h+='<div style="background:#22263a;border-radius:50px;height:6px;margin-top:10px;overflow:hidden"><div style="height:6px;border-radius:50px;background:linear-gradient(90deg,#3ddc97,#f5a623);width:'+pct+'%"></div></div>';
+      h+='</div>';
+    });
+  }
+
+  if(meDeben.length>0){
+    h+='<div class="sec">💰 Me deben</div>';
+    meDeben.forEach(function(x){
+      h+='<div class="lcard al-dia" data-did="'+x.id+'">';
+      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.obs||'')+'</div></div><span class="badge pagado">Me deben</span></div>';
+      h+='<div class="lcard-info"><div><div class="lbl2">Valor</div><div class="val2">'+fCOP(x.total)+'</div></div>'+(x.cuota?'<div><div class="lbl2">Cuota</div><div class="val2">'+fCOP(x.cuota)+'</div></div>':'')+'</div>';
+      h+='</div>';
+    });
+  }
+
+  if(recordatorios.length>0){
+    h+='<div class="sec">🔔 Recordatorios</div>';
+    recordatorios.forEach(function(x){
+      h+='<div class="lcard" style="border-left:3px solid #f5a623" data-did="'+x.id+'">';
+      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.obs||'')+'</div></div><span class="badge" style="background:rgba(245,166,35,.2);color:#f5a623">Día '+(x.dia||'?')+'</span></div>';
+      if(x.cuota) h+='<div class="lcard-info"><div><div class="lbl2">Valor</div><div class="val2">'+fCOP(x.cuota)+'</div></div></div>';
+      h+='</div>';
+    });
+  }
+
+  if(d.deudas.length===0) h+='<div class="empty">✅ Sin deudas registradas</div>';
+
+  document.getElementById('tab2').innerHTML=h;
+
+  document.querySelectorAll('#tab2 .lcard').forEach(function(el){
+    el.onclick=function(){abrirDetalleDeuda(this.getAttribute('data-did'));};
+  });
+  var bn=document.getElementById('btnNuevaDeuda');
+  if(bn) bn.onclick=function(){abrirModalDeuda();};
+}
+
+function abrirModalDeuda(id){
+  ['dId','dNom','dTotal','dCuota','dInteres','dDia','dPagadas','dTotalC','dTel','dObs'].forEach(function(x){document.getElementById(x).value='';});
+  document.getElementById('dTipo').value='propia';
+  if(id){
+    var d=getData(); if(!d.deudas) d.deudas=[];
+    var x=d.deudas.find(function(i){return i.id===id;});
+    if(x){
+      document.getElementById('dId').value=x.id;
+      document.getElementById('dTipo').value=x.tipo||'propia';
+      document.getElementById('dNom').value=x.nombre||'';
+      document.getElementById('dTotal').value=x.total||'';
+      document.getElementById('dCuota').value=x.cuota||'';
+      document.getElementById('dInteres').value=x.interes||'';
+      document.getElementById('dDia').value=x.dia||'';
+      document.getElementById('dPagadas').value=x.pagadas||'';
+      document.getElementById('dTotalC').value=x.totalCuotas||'';
+      document.getElementById('dTel').value=x.telefono||'';
+      document.getElementById('dObs').value=x.obs||'';
+    }
+  }
+  document.getElementById('mDeudaTit').textContent=id?'Editar':'Nueva Deuda';
+  document.getElementById('mDeudaDet').className='overlay';
+  document.getElementById('mDeuda').className='overlay open';
+}
+
+document.getElementById('btnGuardarDeuda').onclick=function(){
+  var nom=document.getElementById('dNom').value.trim();
+  if(!nom){toast('⚠️ Escribe el nombre');return;}
+  var d=getData(); if(!d.deudas) d.deudas=[];
+  var eid=document.getElementById('dId').value;
+  var item={id:eid||uid(),tipo:document.getElementById('dTipo').value,nombre:nom,total:document.getElementById('dTotal').value,cuota:document.getElementById('dCuota').value,interes:document.getElementById('dInteres').value,dia:document.getElementById('dDia').value,pagadas:document.getElementById('dPagadas').value,totalCuotas:document.getElementById('dTotalC').value,telefono:document.getElementById('dTel').value.trim(),obs:document.getElementById('dObs').value.trim()};
+  if(eid){var i=d.deudas.findIndex(function(x){return x.id===eid;});if(i!==-1)d.deudas[i]=item;}
+  else d.deudas.push(item);
+  saveData(d);
+  document.getElementById('mDeuda').className='overlay';
+  render();
+};
+document.getElementById('btnCancelarDeuda').onclick=function(){document.getElementById('mDeuda').className='overlay';};
+document.getElementById('mDeuda').onclick=function(e){if(e.target===this)this.className='overlay';};
+
+function abrirDetalleDeuda(id){
+  var d=getData(); if(!d.deudas) d.deudas=[];
+  var x=d.deudas.find(function(i){return i.id===id;});
+  if(!x) return;
+  var pag=Number(x.pagadas)||0, tot=Number(x.totalCuotas)||0;
+  var faltan=tot>0?tot-pag:null;
+  var pct=tot>0?Math.min(100,Math.round(pag/tot*100)):0;
+  var intMes=x.interes&&x.total?Math.round(Number(x.total)*Number(x.interes)/100):0;
+  var h='<div class="mhandle"></div><div class="mtitle">'+x.nombre+'</div>';
+  h+='<div class="lcard-info" style="gap:12px;margin-bottom:16px">';
+  if(x.total) h+='<div><div class="lbl2">Deuda total</div><div class="val2">'+fCOP(x.total)+'</div></div>';
+  if(x.cuota) h+='<div><div class="lbl2">Cuota mensual</div><div class="val2">'+fCOP(x.cuota)+'</div></div>';
+  if(x.interes) h+='<div><div class="lbl2">Interés mensual</div><div class="val2">'+x.interes+'%</div></div>';
+  if(intMes) h+='<div><div class="lbl2">Interés en $</div><div class="val2" style="color:#ff4f6d">'+fCOP(intMes)+'/mes</div></div>';
+  if(x.dia) h+='<div><div class="lbl2">Día de pago</div><div class="val2">Día '+x.dia+'</div></div>';
+  if(faltan!==null) h+='<div><div class="lbl2">Pagadas</div><div class="val2">'+pag+' de '+tot+'</div></div><div><div class="lbl2">Faltan</div><div class="val2" style="color:#ff4f6d">'+faltan+'</div></div>';
+  if(x.obs) h+='<div style="grid-column:1/-1"><div class="lbl2">Notas</div><div class="val2">'+x.obs+'</div></div>';
+  h+='</div>';
+  if(tot>0) h+='<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:.75rem;color:#7a7f9a;margin-bottom:6px"><span>Progreso</span><span>'+pct+'% pagado</span></div><div style="background:#22263a;border-radius:50px;height:6px;overflow:hidden"><div style="height:6px;border-radius:50px;background:linear-gradient(90deg,#3ddc97,#f5a623);width:'+pct+'%"></div></div></div>';
+  h+='<div class="dbtns">';
+  h+='<button class="dbtn pago" id="dd-cuota">✅ Registrar cuota</button>';
+  if(x.telefono) h+='<button class="dbtn wa" id="dd-wa">💬 WhatsApp</button>';
+  h+='<button class="dbtn edit" id="dd-edit">✏️ Editar</button>';
+  h+='<button class="dbtn del" id="dd-del">🗑️</button>';
+  h+='</div>';
+  document.getElementById('mDeudaDetContent').innerHTML=h;
+  document.getElementById('mDeudaDet').className='overlay open';
+
+  document.getElementById('dd-cuota').onclick=function(){
+    var d2=getData(); if(!d2.deudas) d2.deudas=[];
+    var x2=d2.deudas.find(function(i){return i.id===id;});
+    if(!x2) return;
+    x2.pagadas=(Number(x2.pagadas)||0)+1;
+    saveData(d2); toast('✅ Cuota registrada'); document.getElementById('mDeudaDet').className='overlay'; render();
+  };
+  var ddw=document.getElementById('dd-wa');
+  if(ddw) ddw.onclick=function(){
+    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    var hoy=new Date(), mes=meses[hoy.getMonth()], anio=hoy.getFullYear();
+    var msg='Hola '+x.nombre+' 👋\n\nLe recuerdo el pago pendiente de '+mes+' '+anio+'.\n\n💰 Valor: '+fCOP(x.cuota)+'\n📅 Día: '+x.dia+' de '+mes+'\n\n🏦 Bancolombia Ahorros: 687-761838-34\n👤 Jems Hoyos\n\nGracias! 🙏';
+    window.open('https://wa.me/57'+x.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+  };
+  document.getElementById('dd-edit').onclick=function(){abrirModalDeuda(id);};
+  document.getElementById('dd-del').onclick=function(){
+    confirm2('¿Eliminar esta deuda?','Eliminar',function(ok){
+      if(!ok) return;
+      var d2=getData(); if(!d2.deudas) d2.deudas=[];
+      d2.deudas=d2.deudas.filter(function(i){return i.id!==id;});
+      saveData(d2); document.getElementById('mDeudaDet').className='overlay'; render();
+    });
+  };
+}
+document.getElementById('mDeudaDet').onclick=function(e){if(e.target===this)this.className='overlay';};
+
 // ALERTAS
 function renderAlertas(){
   var d=getData(), mc=mesHoy(), hoy=new Date();
@@ -309,8 +510,8 @@ function renderAlertas(){
   alertas.forEach(function(a){
     h+='<div class="lcard vencido" data-id="'+a.id+'" style="cursor:pointer"><div class="lcard-top"><div style="font-size:1.5rem">'+a.icon+'</div><div><div class="lcard-nom" style="font-size:.9rem">'+a.titulo+'</div><div class="lcard-sub">'+a.sub+'</div></div></div></div>';
   });
-  document.getElementById('tab2').innerHTML=h;
-  document.querySelectorAll('#tab2 .lcard').forEach(function(el){
+  document.getElementById('tab3').innerHTML=h;
+  document.querySelectorAll('#tab3 .lcard').forEach(function(el){
     el.onclick=function(){abrirDetalle(this.getAttribute('data-id'));};
   });
 }
@@ -504,6 +705,23 @@ function init(){
       {id:uid(),nombre:'APTO #3',arrendatario:'Esteban',telefono:'3219032376',cedula:'',canon:350000,diaPago:'13',inicioContrato:'',finContrato:'',obs:'NIC: 7927789'},
     ];
     if(!d.pagos) d.pagos=[];
+    if(!d.deudas) d.deudas=[];
+    saveData(d);
+  }
+  if(!d.deudas) d.deudas=[];
+  if(d.deudas.length===0){
+    d.deudas=[
+      {id:uid(),tipo:'propia',nombre:'Jose Perez',total:63000000,cuota:1800000,interes:'2.9',dia:'10',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Maria Luz',total:48000000,cuota:1200000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Katy mujer de Jos',total:46000000,cuota:1150000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Papa D Dario',total:34000000,cuota:850000,interes:'2.5',dia:'8',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Sra Nuris',total:15000000,cuota:300000,interes:'2.0',dia:'22',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Bancolombia',total:123309770,cuota:6250000,interes:'3.5',dia:'13',pagadas:'20',totalCuotas:'48',obs:'Crédito consumo'},
+      {id:uid(),tipo:'propia',nombre:'Mundo Mujer',total:23000000,cuota:1144245,interes:'26.2',dia:'5',pagadas:'17',totalCuotas:'30',obs:'A nombre de Maria Luz Hoyos'},
+      {id:uid(),tipo:'me-deben',nombre:'Edinson',total:10000000,cuota:'',interes:'2.5',dia:'3',pagadas:'0',totalCuotas:'',obs:'Me debe'},
+      {id:uid(),tipo:'me-deben',nombre:'Clara Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3234631973'},
+      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3127170071'},
+    ];
     saveData(d);
   }
   render();
