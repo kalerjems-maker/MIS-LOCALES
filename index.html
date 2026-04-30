@@ -290,29 +290,14 @@ function mostrarToast(msg) {
 }
 
 // ============================================================
-// DATOS — con respaldo en memoria para Android WebView
+// DATOS
 // ============================================================
 var STORE_KEY = 'mis_locales_v1';
-var _memData = null; // respaldo en memoria
-
 function cargarDatos() {
-  // Primero intentar localStorage
-  try {
-    var raw = localStorage.getItem(STORE_KEY);
-    if(raw) {
-      var parsed = JSON.parse(raw);
-      if(parsed && parsed.locales) { _memData = parsed; return parsed; }
-    }
-  } catch(e) {}
-  // Si localStorage falla, usar memoria
-  if(_memData) return _memData;
-  return {locales:[],pagos:[]};
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {locales:[],pagos:[]}; }
+  catch(e) { return {locales:[],pagos:[]}; }
 }
-
-function guardarDatos(d) {
-  _memData = d; // siempre guardar en memoria
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch(e) {}
-}
+function guardarDatos(d) { localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function mesActual() { var h=new Date(); return h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0'); }
 function fmtCOP(n) { if(!n) return '$0'; return '$'+Number(n).toLocaleString('es-CO'); }
@@ -890,4 +875,13 @@ function cargarDatosIniciales() {
   }
   if(!d.pagosDeuda) d.pagosDeuda=[];
   guardarDatos(d);
-  if
+  if(d.locales.length===0){
+    d.locales=base.map(function(l){ return Object.assign({id:uid()},l); });
+    guardarDatos(d); return;
+  }
+  var cambio=false;
+  base.forEach(function(n){
+    var local=d.locales.find(function(l){ return l.nombre===n.nombre; });
+    if(local){
+      if(!local.telefono){ local.telefono=n.telefono; cambio=true; }
+      if(!local.diaPago){ loca
