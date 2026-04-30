@@ -125,17 +125,17 @@
   <div class="header-inner">
     <div class="logo">Mis<span>Locales</span></div>
     <div style="display:flex;gap:8px;align-items:center">
-      <button onclick="cargarDesdeSheets()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">☁️</button>
-      <button onclick="sincronizarConSheets()" style="background:transparent;border:1px solid rgba(61,220,151,.3);color:var(--success);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">💾</button>
-      <button class="btn-add" onclick="abrirModalNuevoLocal()">+ Nuevo Local</button>
+      <button id="btn-cargar-sheets" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">☁️</button>
+      <button id="btn-guardar-sheets" style="background:transparent;border:1px solid rgba(61,220,151,.3);color:var(--success);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">💾</button>
+      <button onclick="abrirModalNuevoLocal()" id="btn-nuevo-local" class="btn-add">+ Nuevo Local</button>
     </div>
   </div>
 </header>
 <div class="tabs">
-  <button class="tab active" onclick="cambiarTab('resumen',this)">📊 Resumen</button>
-  <button class="tab" onclick="cambiarTab('locales',this)">🏪 Locales</button>
-  <button class="tab" onclick="cambiarTab('deudas',this)">💸 Deudas</button>
-  <button class="tab" onclick="cambiarTab('alertas',this)">🔔 Alertas</button>
+  <button class="tab active" id="tab-btn-resumen">📊 Resumen</button>
+  <button class="tab" id="tab-btn-locales">🏪 Locales</button>
+  <button class="tab" id="tab-btn-deudas">💸 Deudas</button>
+  <button class="tab" id="tab-btn-alertas">🔔 Alertas</button>
 </div>
 <div class="main">
   <div id="tab-resumen"></div>
@@ -886,4 +886,7 @@ function cargarDatosIniciales() {
       {id:uid(),tipo:'propia',nombre:'Mundo Mujer',total:23000000,cuota:1144245,interes:'26.2',dia:'5',pagadas:'17',totalCuotas:'30',obs:'CREDINegocios - A nombre de Maria Luz Hoyos, pago Jems'},
       {id:uid(),tipo:'me-deben',nombre:'Edinson',total:10000000,cuota:'',interes:'2.5',dia:'3',pagadas:'0',totalCuotas:'',obs:'Me debe'},
       {id:uid(),tipo:'me-deben',nombre:'Clara Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3234631973'},
-      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',tel
+      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3127170071'},
+    ];
+  }
+  if(!d.pagosDeuda) d.pagos
