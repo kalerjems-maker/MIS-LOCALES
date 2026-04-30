@@ -448,7 +448,11 @@ function renderResumen() {
       html += '<div class="local-card vence-pronto" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+'</div><div class="local-num">'+l.arrendatario+'</div></div><span class="badge vence">Vence en '+dias+'d</span></div><div class="local-info"><div class="info-item"><div class="lbl">Fin contrato</div><div class="val">'+formatFecha(l.finContrato)+'</div></div><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div></div></div>';
     });
   }
-  document.getElementById('tab-resumen').innerHTML = html;
+  try {
+    document.getElementById('tab-resumen').innerHTML = html;
+  } catch(eR) {
+    document.getElementById('tab-resumen').innerHTML = '<div style="color:red;padding:10px;font-size:11px">'+eR.message+'<br>'+eR.stack+'</div>';
+  }
 }
 
 // ============================================================
@@ -883,9 +887,4 @@ async function cargarDesdeSheets() {
       data.deudas=data.deudas||[];
       data.pagosDeuda=data.pagosDeuda||[];
       guardarDatos(data); renderAll();
-      mostrarToast('✅ Datos actualizados desde la nube');
-    } else { mostrarToast('⚠️ No hay datos en la nube aún'); }
-  } catch(e) { mostrarToast('⚠️ Error al conectar con la nube'); }
-}
-
-// ======================================
+      mostrarToast('✅ Datos actualizados desde la nube')
