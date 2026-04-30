@@ -268,7 +268,7 @@
 // ============================================================
 // SISTEMA DE CONFIRMACION PERSONALIZADO (sin alert/confirm nativos)
 // ============================================================
-let _confirmCallback = null;
+var _confirmCallback = null;
 function mostrarConfirm(msg, okLabel, callback) {
   okLabel = okLabel || 'Confirmar';
   document.getElementById('modal-confirm-msg').textContent = msg;
@@ -290,16 +290,31 @@ function mostrarToast(msg) {
 }
 
 // ============================================================
-// DATOS
+// DATOS — con respaldo en memoria para Android WebView
 // ============================================================
 var STORE_KEY = 'mis_locales_v1';
+var _memData = null; // respaldo en memoria
+
 function cargarDatos() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {locales:[],pagos:[]}; }
-  catch(e) { return {locales:[],pagos:[]}; }
+  // Primero intentar localStorage
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw) {
+      var parsed = JSON.parse(raw);
+      if(parsed && parsed.locales) { _memData = parsed; return parsed; }
+    }
+  } catch(e) {}
+  // Si localStorage falla, usar memoria
+  if(_memData) return _memData;
+  return {locales:[],pagos:[]};
 }
-function guardarDatos(d) { localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
+
+function guardarDatos(d) {
+  _memData = d; // siempre guardar en memoria
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch(e) {}
+}
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function mesActual() { var h=new Date(); return h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0'); }
+function mesActual() { var h=new Date(); var m=h.getMonth()+1; return h.getFullYear()+'-'+(m<10?'0':'')+m; }
 function fmtCOP(n) { if(!n) return '$0'; return '$'+Number(n).toLocaleString('es-CO'); }
 function formatFecha(f) { if(!f) return '—'; var p=f.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 function formatMes(ym) {
@@ -364,7 +379,8 @@ function renderResumen() {
   var d=cargarDatos(), mc=mesActual(), hoy=new Date();
   var conArr=d.locales.filter(function(l){ return l.arrendatario; });
   var pagadosMes=d.pagos.filter(function(p){ return p.mes===mc; });
-  var localesPagados=new Set(pagadosMes.map(function(p){ return p.localId; }));
+  var _setPag={};pagadosMes.forEach(function(p){_setPag[p.localId]=true;});
+  var localesPagados={size:Object.keys(_setPag).length,has:function(id){return !!_setPag[id];}};
   var pendientes=conArr.filter(function(l){ return !localesPagados.has(l.id); });
   var totalPorCobrar=pendientes.reduce(function(s,l){ return s+(canonActual(l)||0); },0);
   var totalRecibido=pagadosMes.reduce(function(s,p){ return s+(Number(p.monto)||0); },0);
@@ -870,18 +886,4 @@ function cargarDatosIniciales() {
       {id:uid(),tipo:'propia',nombre:'Mundo Mujer',total:23000000,cuota:1144245,interes:'26.2',dia:'5',pagadas:'17',totalCuotas:'30',obs:'CREDINegocios - A nombre de Maria Luz Hoyos, pago Jems'},
       {id:uid(),tipo:'me-deben',nombre:'Edinson',total:10000000,cuota:'',interes:'2.5',dia:'3',pagadas:'0',totalCuotas:'',obs:'Me debe'},
       {id:uid(),tipo:'me-deben',nombre:'Clara Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3234631973'},
-      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3127170071'},
-    ];
-  }
-  if(!d.pagosDeuda) d.pagosDeuda=[];
-  guardarDatos(d);
-  if(d.locales.length===0){
-    d.locales=base.map(function(l){ return Object.assign({id:uid()},l); });
-    guardarDatos(d); return;
-  }
-  var cambio=false;
-  base.forEach(function(n){
-    var local=d.locales.find(function(l){ return l.nombre===n.nombre; });
-    if(local){
-      if(!local.telefono){ local.telefono=n.telefono; cambio=true; }
-      if(!local.diaPago){ loca
+      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',tel
