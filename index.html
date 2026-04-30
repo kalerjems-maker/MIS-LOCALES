@@ -4,35 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mis Locales</title>
-<script>
-// Stubs tempranos — se sobreescriben cuando carga el script principal
-window.cambiarTab=function(t,el){setTimeout(function(){if(window._cambiarTab)window._cambiarTab(t,el);},100);};
-window.abrirModalNuevoLocal=function(){setTimeout(function(){if(window._abrirModalNuevoLocal)window._abrirModalNuevoLocal();},100);};
-window.cerrarModal=function(id){setTimeout(function(){if(window._cerrarModal)window._cerrarModal(id);},100);};
-window.cerrarSiOverlay=function(e,id){setTimeout(function(){if(window._cerrarSiOverlay)window._cerrarSiOverlay(e,id);},100);};
-window.verDetalle=function(id){setTimeout(function(){if(window._verDetalle)window._verDetalle(id);},100);};
-window.editarLocal=function(id){setTimeout(function(){if(window._editarLocal)window._editarLocal(id);},100);};
-window.guardarLocal=function(){setTimeout(function(){if(window._guardarLocal)window._guardarLocal();},100);};
-window.pedirEliminarLocal=function(id){setTimeout(function(){if(window._pedirEliminarLocal)window._pedirEliminarLocal(id);},100);};
-window.abrirModalPago=function(id){setTimeout(function(){if(window._abrirModalPago)window._abrirModalPago(id);},100);};
-window.guardarPago=function(){setTimeout(function(){if(window._guardarPago)window._guardarPago();},100);};
-window.pedirEliminarPago=function(a,b){setTimeout(function(){if(window._pedirEliminarPago)window._pedirEliminarPago(a,b);},100);};
-window.selMedio=function(m){setTimeout(function(){if(window._selMedio)window._selMedio(m);},100);};
-window.enviarWhatsApp=function(id){setTimeout(function(){if(window._enviarWhatsApp)window._enviarWhatsApp(id);},100);};
-window.abrirCobrarTodos=function(){setTimeout(function(){if(window._abrirCobrarTodos)window._abrirCobrarTodos();},100);};
-window.abrirModalDeuda=function(){setTimeout(function(){if(window._abrirModalDeuda)window._abrirModalDeuda();},100);};
-window.guardarDeuda=function(){setTimeout(function(){if(window._guardarDeuda)window._guardarDeuda();},100);};
-window.editarDeuda=function(id){setTimeout(function(){if(window._editarDeuda)window._editarDeuda(id);},100);};
-window.verDetalleDeuda=function(id){setTimeout(function(){if(window._verDetalleDeuda)window._verDetalleDeuda(id);},100);};
-window.pedirEliminarDeuda=function(id){setTimeout(function(){if(window._pedirEliminarDeuda)window._pedirEliminarDeuda(id);},100);};
-window.registrarCuota=function(id){setTimeout(function(){if(window._registrarCuota)window._registrarCuota(id);},100);};
-window.registrarAbono=function(id){setTimeout(function(){if(window._registrarAbono)window._registrarAbono(id);},100);};
-window.simularAbono=function(id){setTimeout(function(){if(window._simularAbono)window._simularAbono(id);},100);};
-window.enviarWADeuda=function(id){setTimeout(function(){if(window._enviarWADeuda)window._enviarWADeuda(id);},100);};
-window.confirmarRespuesta=function(ok){setTimeout(function(){if(window._confirmarRespuesta)window._confirmarRespuesta(ok);},100);};
-window.sincronizarConSheets=function(){setTimeout(function(){if(window._sincronizarConSheets)window._sincronizarConSheets();},100);};
-window.cargarDesdeSheets=function(){setTimeout(function(){if(window._cargarDesdeSheets)window._cargarDesdeSheets();},100);};
-</script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -152,19 +123,19 @@ window.cargarDesdeSheets=function(){setTimeout(function(){if(window._cargarDesde
 <body>
 <header>
   <div class="header-inner">
-    <div class="logo">Mis<span>Locales</span> <span style="font-size:.6rem;color:var(--muted)">v10</span></div>
+    <div class="logo">Mis<span>Locales</span></div>
     <div style="display:flex;gap:8px;align-items:center">
-      <button id="btn-cargar-sheets" onclick="window.cargarDesdeSheets()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">☁️</button>
-      <button id="btn-guardar-sheets" onclick="window.sincronizarConSheets()" style="background:transparent;border:1px solid rgba(61,220,151,.3);color:var(--success);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">💾</button>
-      <button onclick="window.abrirModalNuevoLocal()" id="btn-nuevo-local" class="btn-add">+ Nuevo Local</button>
+      <button onclick="cargarDesdeSheets()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">☁️</button>
+      <button onclick="sincronizarConSheets()" style="background:transparent;border:1px solid rgba(61,220,151,.3);color:var(--success);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">💾</button>
+      <button class="btn-add" onclick="abrirModalNuevoLocal()">+ Nuevo Local</button>
     </div>
   </div>
 </header>
 <div class="tabs">
-  <button class="tab active" id="tab-btn-resumen" onclick="window.cambiarTab('resumen',this)">📊 Resumen</button>
-  <button class="tab" id="tab-btn-locales" onclick="window.cambiarTab('locales',this)">🏪 Locales</button>
-  <button class="tab" id="tab-btn-deudas" onclick="window.cambiarTab('deudas',this)">💸 Deudas</button>
-  <button class="tab" id="tab-btn-alertas" onclick="window.cambiarTab('alertas',this)">🔔 Alertas</button>
+  <button class="tab active" onclick="cambiarTab('resumen',this)">📊 Resumen</button>
+  <button class="tab" onclick="cambiarTab('locales',this)">🏪 Locales</button>
+  <button class="tab" onclick="cambiarTab('deudas',this)">💸 Deudas</button>
+  <button class="tab" onclick="cambiarTab('alertas',this)">🔔 Alertas</button>
 </div>
 <div class="main">
   <div id="tab-resumen"></div>
@@ -297,7 +268,7 @@ window.cargarDesdeSheets=function(){setTimeout(function(){if(window._cargarDesde
 // ============================================================
 // SISTEMA DE CONFIRMACION PERSONALIZADO (sin alert/confirm nativos)
 // ============================================================
-var _confirmCallback = null;
+let _confirmCallback = null;
 function mostrarConfirm(msg, okLabel, callback) {
   okLabel = okLabel || 'Confirmar';
   document.getElementById('modal-confirm-msg').textContent = msg;
@@ -319,31 +290,16 @@ function mostrarToast(msg) {
 }
 
 // ============================================================
-// DATOS — con respaldo en memoria para Android WebView
+// DATOS
 // ============================================================
 var STORE_KEY = 'mis_locales_v1';
-var _memData = null; // respaldo en memoria
-
 function cargarDatos() {
-  // Primero intentar localStorage
-  try {
-    var raw = localStorage.getItem(STORE_KEY);
-    if(raw) {
-      var parsed = JSON.parse(raw);
-      if(parsed && parsed.locales) { _memData = parsed; return parsed; }
-    }
-  } catch(e) {}
-  // Si localStorage falla, usar memoria
-  if(_memData) return _memData;
-  return {locales:[],pagos:[]};
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {locales:[],pagos:[]}; }
+  catch(e) { return {locales:[],pagos:[]}; }
 }
-
-function guardarDatos(d) {
-  _memData = d; // siempre guardar en memoria
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch(e) {}
-}
+function guardarDatos(d) { localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function mesActual() { var h=new Date(); var m=h.getMonth()+1; return h.getFullYear()+'-'+(m<10?'0':'')+m; }
+function mesActual() { var h=new Date(); return h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0'); }
 function fmtCOP(n) { if(!n) return '$0'; return '$'+Number(n).toLocaleString('es-CO'); }
 function formatFecha(f) { if(!f) return '—'; var p=f.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 function formatMes(ym) {
@@ -408,8 +364,7 @@ function renderResumen() {
   var d=cargarDatos(), mc=mesActual(), hoy=new Date();
   var conArr=d.locales.filter(function(l){ return l.arrendatario; });
   var pagadosMes=d.pagos.filter(function(p){ return p.mes===mc; });
-  var _setPag={};pagadosMes.forEach(function(p){_setPag[p.localId]=true;});
-  var localesPagados={size:Object.keys(_setPag).length,has:function(id){return !!_setPag[id];}};
+  var localesPagados=new Set(pagadosMes.map(function(p){ return p.localId; }));
   var pendientes=conArr.filter(function(l){ return !localesPagados.has(l.id); });
   var totalPorCobrar=pendientes.reduce(function(s,l){ return s+(canonActual(l)||0); },0);
   var totalRecibido=pagadosMes.reduce(function(s,p){ return s+(Number(p.monto)||0); },0);
@@ -448,11 +403,7 @@ function renderResumen() {
       html += '<div class="local-card vence-pronto" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+'</div><div class="local-num">'+l.arrendatario+'</div></div><span class="badge vence">Vence en '+dias+'d</span></div><div class="local-info"><div class="info-item"><div class="lbl">Fin contrato</div><div class="val">'+formatFecha(l.finContrato)+'</div></div><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div></div></div>';
     });
   }
-  try {
-    document.getElementById('tab-resumen').innerHTML = html;
-  } catch(eR) {
-    document.getElementById('tab-resumen').innerHTML = '<div style="color:red;padding:10px;font-size:11px">'+eR.message+'<br>'+eR.stack+'</div>';
-  }
+  document.getElementById('tab-resumen').innerHTML = html;
 }
 
 // ============================================================
@@ -887,4 +838,50 @@ async function cargarDesdeSheets() {
       data.deudas=data.deudas||[];
       data.pagosDeuda=data.pagosDeuda||[];
       guardarDatos(data); renderAll();
-      mostrarToast('✅ Datos actualizados desde la nube')
+      mostrarToast('✅ Datos actualizados desde la nube');
+    } else { mostrarToast('⚠️ No hay datos en la nube aún'); }
+  } catch(e) { mostrarToast('⚠️ Error al conectar con la nube'); }
+}
+
+// ============================================================
+// DATOS INICIALES
+// ============================================================
+function cargarDatosIniciales() {
+  var d=cargarDatos();
+  var base=[
+    {nombre:'LOCAL #1',arrendatario:'Jose Chica',    telefono:'3126849912',cedula:'',canon:500000, diaPago:'15',inicioContrato:'',finContrato:'',obs:'NIC: 7911206',incrementoPct:'',mesIncremento:''},
+    {nombre:'LOCAL #2',arrendatario:'Carnicería',    telefono:'3217789612',cedula:'',canon:500000, diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC: 7911208',incrementoPct:'',mesIncremento:''},
+    {nombre:'LOCAL #3',arrendatario:'Willian Ocampo',telefono:'3004023337',cedula:'',canon:1000000,diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC principal: 7911210 | NIC secundario: 7911217',incrementoPct:'',mesIncremento:''},
+    {nombre:'LOCAL #4',arrendatario:'Tienda Jems',   telefono:'3107036496',cedula:'',canon:1000000,diaPago:'30',inicioContrato:'',finContrato:'',obs:'NIC: 7911213',incrementoPct:'',mesIncremento:''},
+    {nombre:'LOCAL #5',arrendatario:'Dimones',       telefono:'3226120250',cedula:'',canon:1200000,diaPago:'10',inicioContrato:'',finContrato:'',obs:'NIC principal: 7911216 | NIC secundario: 7911214',incrementoPct:'',mesIncremento:''},
+    {nombre:'APTO #1', arrendatario:'Almacén Moto',  telefono:'3017875737',cedula:'',canon:300000, diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC: 7927773',incrementoPct:'',mesIncremento:''},
+    {nombre:'APTO #2', arrendatario:'Kuko',          telefono:'3135051034',cedula:'',canon:350000, diaPago:'15',inicioContrato:'',finContrato:'',obs:'NIC: 7927787',incrementoPct:'',mesIncremento:''},
+    {nombre:'APTO #3', arrendatario:'Esteban',       telefono:'3219032376',cedula:'',canon:350000, diaPago:'13',inicioContrato:'',finContrato:'',obs:'NIC: 7927789',incrementoPct:'',mesIncremento:''},
+  ];
+  if(!d.deudas) d.deudas=[];
+  if(d.deudas.length===0){
+    d.deudas=[
+      {id:uid(),tipo:'propia',nombre:'Jose Perez',total:63000000,cuota:1800000,interes:'2.9',dia:'10',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Maria Luz',total:48000000,cuota:1200000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Katy mujer de Jos',total:46000000,cuota:1150000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Papa D Dario',total:34000000,cuota:850000,interes:'2.5',dia:'8',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Sra Nuris',total:15000000,cuota:300000,interes:'2.0',dia:'22',pagadas:'0',totalCuotas:'',obs:''},
+      {id:uid(),tipo:'propia',nombre:'Bancolombia',total:123309770,cuota:6250000,interes:'3.5',dia:'13',pagadas:'20',totalCuotas:'48',obs:'Crédito consumo - Desembolso 13 Ago 2024'},
+      {id:uid(),tipo:'propia',nombre:'Mundo Mujer',total:23000000,cuota:1144245,interes:'26.2',dia:'5',pagadas:'17',totalCuotas:'30',obs:'CREDINegocios - A nombre de Maria Luz Hoyos, pago Jems'},
+      {id:uid(),tipo:'me-deben',nombre:'Edinson',total:10000000,cuota:'',interes:'2.5',dia:'3',pagadas:'0',totalCuotas:'',obs:'Me debe'},
+      {id:uid(),tipo:'me-deben',nombre:'Clara Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3234631973'},
+      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3127170071'},
+    ];
+  }
+  if(!d.pagosDeuda) d.pagosDeuda=[];
+  guardarDatos(d);
+  if(d.locales.length===0){
+    d.locales=base.map(function(l){ return Object.assign({id:uid()},l); });
+    guardarDatos(d); return;
+  }
+  var cambio=false;
+  base.forEach(function(n){
+    var local=d.locales.find(function(l){ return l.nombre===n.nombre; });
+    if(local){
+      if(!local.telefono){ local.telefono=n.telefono; cambio=true; }
+      if(!local.diaPago){ loca
