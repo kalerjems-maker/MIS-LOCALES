@@ -211,7 +211,7 @@ var MEM = null;
 var MEDIO = '';
 var confirmCb = null;
 var tabActual = 0;
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynwlPylf8iZT0DSIT6DfZAl2KI_sIC2Ix6UQBX2IogWulDBsZ7sT4hdXKaHfBP3jwu/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5xTj7ObZEninD36u8125roQFHEjD2CKIplGJRX31ajE92_AWP3Ecb_2iCHscj40cG/exec';
 
 function getData() {
   try { var r=JSON.parse(localStorage.getItem(SK)); if(r&&r.locales){MEM=r;return r;} } catch(e){}
@@ -668,26 +668,46 @@ function cobrarTodos(){
   enviarSig();
 }
 
-// SHEETS
+// SHEETS con JSONP para evitar CORS
+function jsonpRequest(url, callback) {
+  var cbName = 'cb_' + Date.now();
+  var script = document.createElement('script');
+  window[cbName] = function(data) {
+    delete window[cbName];
+    document.body.removeChild(script);
+    callback(data);
+  };
+  script.src = url + (url.indexOf('?')>=0?'&':'?') + 'callback=' + cbName + '&t=' + Date.now();
+  script.onerror = function() {
+    delete window[cbName];
+    document.body.removeChild(script);
+    callback(null);
+  };
+  document.body.appendChild(script);
+}
+
 document.getElementById('btnGuardar').onclick=function(){
   var d=getData();
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'application/json'}})
-  .then(function(){toast('✅ Guardado en la nube');})
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}})
+  .then(function(r){return r.json();})
+  .then(function(res){
+    if(res&&res.ok) toast('✅ Guardado en la nube');
+    else toast('⚠️ Error al guardar');
+  })
   .catch(function(){toast('⚠️ Sin conexión');});
 };
+
 document.getElementById('btnCargar').onclick=function(){
   toast('🔄 Cargando...');
-  fetch(SCRIPT_URL+'?t='+Date.now())
-  .then(function(r){return r.json();})
-  .then(function(data){
+  jsonpRequest(SCRIPT_URL, function(data){
+    if(!data){toast('⚠️ Error de conexión');return;}
     if(data.locales&&data.locales.length>0){
       data.pagos=data.pagos||[];
       data.deudas=data.deudas||[];
       saveData(data);render();
       toast('✅ Datos actualizados');
     } else {toast('⚠️ No hay datos en la nube');}
-  })
-  .catch(function(){toast('⚠️ Error de conexión');});
+  });
 };
 
 // DATOS INICIALES
