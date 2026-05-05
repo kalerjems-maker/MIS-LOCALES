@@ -1,753 +1,969 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MisLocales</title>
+<title>Mis Locales</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0f1117;color:#eef0f8;font-family:sans-serif;min-height:100vh}
-header{background:#1a1d27;padding:16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.07)}
-.logo{font-weight:800;font-size:1.3rem;color:#f5a623}
-.logo span{color:#eef0f8}
-.hbtns{display:flex;gap:8px;align-items:center}
-.btn-add{background:#f5a623;color:#111;border:none;font-weight:700;font-size:.82rem;padding:9px 16px;border-radius:50px;cursor:pointer}
-.tabs{display:flex;background:#1a1d27;border-bottom:1px solid rgba(255,255,255,.07);overflow-x:auto}
-.tab{font-weight:600;font-size:.78rem;padding:14px 16px;color:#7a7f9a;border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
-.tab.active{color:#f5a623;border-bottom-color:#f5a623}
-.main{padding:18px 16px 80px;max-width:600px;margin:0 auto}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.card{background:#1a1d27;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px}
-.card .lbl{font-size:.7rem;color:#7a7f9a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
-.card .val{font-weight:800;font-size:1.5rem}
-.val.green{color:#3ddc97}.val.red{color:#ff4f6d}.val.yellow{color:#f5a623}
-.sec{font-weight:700;font-size:.85rem;color:#7a7f9a;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px}
-.lcard{background:#1a1d27;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden}
-.lcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
-.lcard.al-dia::before{background:#3ddc97}
-.lcard.vencido::before{background:#ff4f6d}
-.lcard.sin-arr::before{background:#7a7f9a}
-.lcard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.lcard-nom{font-weight:700;font-size:1rem}
-.lcard-sub{font-size:.72rem;color:#7a7f9a;margin-top:2px}
-.badge{font-size:.65rem;font-weight:600;padding:4px 10px;border-radius:50px}
-.badge.pagado{background:rgba(61,220,151,.15);color:#3ddc97}
-.badge.pendiente{background:rgba(255,79,109,.15);color:#ff4f6d}
-.badge.libre{background:rgba(122,127,154,.15);color:#7a7f9a}
-.lcard-info{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.lbl2{font-size:.67rem;color:#7a7f9a}
-.val2{font-size:.85rem;font-weight:500}
-.empty{text-align:center;padding:48px 20px;color:#7a7f9a;font-size:.9rem}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.modal{background:#1a1d27;width:100%;max-width:600px;border-radius:24px 24px 0 0;padding:24px 20px 36px;max-height:90vh;overflow-y:auto}
-.mhandle{width:36px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin:0 auto 20px}
-.mtitle{font-weight:800;font-size:1.2rem;margin-bottom:20px}
-.fgrp{margin-bottom:14px}
-.fgrp label{font-size:.73rem;color:#7a7f9a;text-transform:uppercase;display:block;margin-bottom:6px}
-.fgrp input,.fgrp select{width:100%;background:#22263a;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 14px;color:#eef0f8;font-size:.9rem;outline:none}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn-pri{width:100%;background:#f5a623;color:#111;border:none;font-weight:700;font-size:.95rem;padding:14px;border-radius:12px;cursor:pointer;margin-top:8px}
-.btn-sec{width:100%;background:transparent;color:#7a7f9a;border:1px solid rgba(255,255,255,.07);font-weight:600;font-size:.9rem;padding:13px;border-radius:12px;cursor:pointer;margin-top:8px}
-.dbtns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.dbtn{flex:1;padding:10px;border-radius:10px;font-weight:600;font-size:.76rem;border:none;cursor:pointer;white-space:nowrap}
-.dbtn.pago{background:#3ddc97;color:#111}
-.dbtn.wa{background:#25D366;color:#111}
-.dbtn.edit{background:#22263a;color:#eef0f8;border:1px solid rgba(255,255,255,.07)}
-.dbtn.del{background:rgba(255,79,109,.15);color:#ff4f6d}
-.pitem{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}
-.pitem:last-child{border-bottom:none}
-.pmonto{font-weight:700;color:#3ddc97}
-.pdel{background:none;border:none;color:#ff4f6d;font-size:1rem;cursor:pointer;padding:4px 8px}
-.medio-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.mbtn{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:#22263a;color:#7a7f9a;font-weight:600;font-size:.82rem;cursor:pointer;text-align:center}
-.mbtn.ef{background:rgba(245,166,35,.15);border-color:#f5a623;color:#f5a623}
-.mbtn.tr{background:rgba(61,220,151,.15);border-color:#3ddc97;color:#3ddc97}
-.btn-wa-all{width:100%;background:#25D366;color:#111;border:none;font-weight:700;font-size:.9rem;padding:13px;border-radius:12px;cursor:pointer;margin-bottom:20px}
-#confirm-box{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;align-items:center;justify-content:center}
-#confirm-box.open{display:flex}
-#confirm-inner{background:#1a1d27;border-radius:20px;padding:24px 20px;max-width:320px;width:90%;text-align:center}
-#confirm-msg{font-size:.95rem;line-height:1.5;margin-bottom:20px}
-#confirm-btns{display:flex;gap:10px}
-#confirm-btns button{flex:1;padding:12px;border-radius:10px;font-weight:700;font-size:.85rem;border:none;cursor:pointer}
-#confirm-ok{background:#ff4f6d;color:#fff}
-#confirm-cancel{background:#22263a;color:#7a7f9a}
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1d27;color:#eef0f8;padding:10px 20px;border-radius:50px;font-size:.82rem;z-index:9999;border:1px solid rgba(255,255,255,.1);opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
-.hbtn{background:transparent;border:1px solid rgba(255,255,255,.15);color:#7a7f9a;border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer}
-.hbtn.g{border-color:rgba(61,220,151,.3);color:#3ddc97}
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
+    --accent:#f5a623;--text:#eef0f8;--muted:#7a7f9a;
+    --danger:#ff4f6d;--success:#3ddc97;--warning:#ffb347;
+    --border:rgba(255,255,255,0.07);--radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+  header{background:linear-gradient(135deg,#1a1d27 0%,#12151f 100%);border-bottom:1px solid var(--border);padding:18px 20px 14px;position:sticky;top:0;z-index:100;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--accent);}
+  .logo span{color:var(--text);}
+  .btn-add{background:var(--accent);color:#111;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;padding:9px 16px;border-radius:50px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+  .btn-add:active{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,166,35,.35);}
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;}
+  .tab{font-family:'Syne',sans-serif;font-weight:600;font-size:.78rem;padding:14px 16px;color:var(--muted);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .main{padding:18px 16px 80px;max-width:600px;margin:0 auto;}
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .s-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;}
+  .s-card .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+  .s-card .value{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;}
+  .s-card .value.green{color:var(--success);}.s-card .value.red{color:var(--danger);}.s-card .value.yellow{color:var(--accent);}
+  .btn-cobrar-todos{width:100%;background:#25D366;color:#111;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;padding:13px;border-radius:12px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .15s;}
+  .btn-cobrar-todos:active{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,211,102,.35);}
+  .section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  .local-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;overflow:hidden;}
+  .local-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+  .local-card.al-dia::before{background:var(--success);}.local-card.vence-pronto::before{background:var(--warning);}.local-card.vencido::before{background:var(--danger);}.local-card.sin-arrendatario::before{background:var(--muted);}
+  .local-card:active{border-color:rgba(245,166,35,.3);transform:translateY(-1px);}
+  .local-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .local-nombre{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;}
+  .local-num{font-size:.72rem;color:var(--muted);margin-top:2px;}
+  .badge{font-size:.65rem;font-weight:600;padding:4px 10px;border-radius:50px;letter-spacing:.4px;white-space:nowrap;}
+  .badge.pagado{background:rgba(61,220,151,.15);color:var(--success);}
+  .badge.pendiente{background:rgba(255,79,109,.15);color:var(--danger);}
+  .badge.vence{background:rgba(255,179,71,.15);color:var(--warning);}
+  .badge.libre{background:rgba(122,127,154,.15);color:var(--muted);}
+  .badge.hoy{background:rgba(245,166,35,.2);color:var(--accent);}
+  .local-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .info-item .lbl{font-size:.67rem;color:var(--muted);}.info-item .val{font-size:.85rem;font-weight:500;}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end;justify-content:center;}
+  .overlay.active{display:flex;}
+  .modal{background:var(--surface);width:100%;max-width:600px;border-radius:24px 24px 0 0;padding:24px 20px 36px;max-height:90vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.25,.46,.45,.94);}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+  .modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:20px;}
+  .form-group{margin-bottom:14px;}
+  .form-group label{font-size:.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;}
+  .form-group input,.form-group select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+  .form-group input:focus,.form-group select:focus{border-color:var(--accent);}
+  .form-group select option{background:var(--surface2);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .medio-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .medio-btn{padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;text-align:center;transition:all .2s;}
+  .medio-btn.active-efectivo{background:rgba(245,166,35,.15);border-color:var(--accent);color:var(--accent);}
+  .medio-btn.active-transferencia{background:rgba(61,220,151,.15);border-color:var(--success);color:var(--success);}
+  .btn-primary{width:100%;background:var(--accent);color:#111;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;padding:14px;border-radius:12px;cursor:pointer;margin-top:8px;transition:transform .15s,box-shadow .15s;}
+  .btn-primary:active{transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,.3);}
+  .btn-secondary{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:'Syne',sans-serif;font-weight:600;font-size:.9rem;padding:13px;border-radius:12px;cursor:pointer;margin-top:8px;}
+  .detalle-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .btn-sm{flex:1;padding:10px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:600;font-size:.76rem;border:none;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+  .btn-sm:active{opacity:.85;}
+  .btn-pago{background:var(--success);color:#111;}.btn-wa{background:#25D366;color:#111;}.btn-edit{background:var(--surface2);color:var(--text);border:1px solid var(--border);}.btn-del{background:rgba(255,79,109,.15);color:var(--danger);}
+  .pagos-list{margin-top:16px;}
+  .pago-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+  .pago-item:last-child{border-bottom:none;}
+  .pago-mes{font-weight:500;font-size:.88rem;}.pago-fecha{font-size:.7rem;color:var(--muted);}
+  .pago-monto{font-family:'Syne',sans-serif;font-weight:700;color:var(--success);font-size:.9rem;}
+  .del-pago{background:none;border:none;color:var(--danger);font-size:1rem;cursor:pointer;padding:4px 8px;}
+  .tag-medio{font-size:.62rem;font-weight:600;padding:2px 7px;border-radius:50px;margin-left:5px;}
+  .tag-efectivo{background:rgba(245,166,35,.15);color:var(--accent);}
+  .tag-transferencia{background:rgba(61,220,151,.15);color:var(--success);}
+  .incremento-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .incremento-box .ib-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;margin-bottom:10px;}
+  .incremento-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .incremento-row:last-child{margin-bottom:0;}
+  .incremento-row .ir-label{font-size:.75rem;color:var(--muted);}
+  .incremento-row .ir-val{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;}
+  .meses-badge{display:inline-block;background:rgba(245,166,35,.12);color:var(--accent);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:50px;margin-left:6px;}
+  .empty{text-align:center;padding:48px 20px;color:var(--muted);}
+  .empty .icon{font-size:2.5rem;margin-bottom:12px;}.empty p{font-size:.9rem;line-height:1.5;}
+  .alertas-list{display:flex;flex-direction:column;gap:10px;}
+  .alerta-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;gap:14px;align-items:center;}
+  .alerta-icon{font-size:1.5rem;}.alerta-texto .titulo{font-weight:600;font-size:.88rem;}.alerta-texto .sub{font-size:.75rem;color:var(--muted);margin-top:3px;}
+  .cobro-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+  .cobro-row:last-of-type{border-bottom:none;}
+  .deuda-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
+  .deuda-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+  .deuda-card.deuda-propia::before{background:var(--danger);}
+  .deuda-card.me-deben::before{background:var(--success);}
+  .deuda-card.recordatorio::before{background:var(--accent);}
+  .fin-bar-wrap{background:var(--surface2);border-radius:50px;height:6px;margin-top:10px;overflow:hidden;}
+  .fin-bar{height:6px;border-radius:50px;background:linear-gradient(90deg,var(--danger),var(--warning));}
+  .analisis-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:20px;}
+  .an-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;}
+  .an-card .label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+  .an-card .value{font-family:'Syne',sans-serif;font-weight:800;font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  /* Estado mensual deuda */
+  .estado-mes-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:4px;}
+  .estado-mes-label{font-size:.78rem;color:var(--muted);}
+  .estado-btns{display:flex;gap:6px;}
+  .btn-estado{padding:7px 14px;border-radius:50px;font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;border:1.5px solid transparent;cursor:pointer;transition:all .2s;}
+  .btn-estado.pagado-act{background:rgba(61,220,151,.2);border-color:var(--success);color:var(--success);}
+  .btn-estado.pendiente-act{background:rgba(255,79,109,.2);border-color:var(--danger);color:var(--danger);}
+  .btn-estado.inact{background:var(--surface2);border-color:var(--border);color:var(--muted);}
+
+  /* Alarma */
+  .alarm-row{display:flex;align-items:center;justify-content:space-between;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.15);border-radius:12px;padding:12px 14px;margin-top:12px;}
+  .alarm-label{font-size:.78rem;color:var(--accent);}
+  .btn-alarm{background:var(--accent);color:#111;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;padding:7px 14px;border-radius:50px;cursor:pointer;}
+
+  /* MODAL CONFIRMACION PERSONALIZADO */
+  #modal-confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;align-items:center;justify-content:center;}
+  #modal-confirm-overlay.active{display:flex;}
+  #modal-confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px 20px;max-width:320px;width:90%;text-align:center;}
+  #modal-confirm-msg{font-size:.95rem;line-height:1.5;margin-bottom:20px;}
+  #modal-confirm-btns{display:flex;gap:10px;}
+  #modal-confirm-btns button{flex:1;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;border:none;cursor:pointer;}
+  #btn-confirm-ok{background:var(--danger);color:#fff;}
+  #btn-confirm-cancel{background:var(--surface2);color:var(--muted);}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1d27;color:#eef0f8;padding:10px 20px;border-radius:50px;font-size:.82rem;z-index:9999;border:1px solid rgba(255,255,255,.1);white-space:nowrap;transition:opacity .3s;opacity:0;pointer-events:none;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="logo">Mis<span>Locales</span></div>
-  <div class="hbtns">
-    <button class="hbtn" id="btnCargar">☁️</button>
-    <button class="hbtn g" id="btnGuardar">💾</button>
-    <button class="btn-add" id="btnNuevo">+ Nuevo Local</button>
+  <div class="header-inner">
+    <div class="logo">Mis<span>Locales</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="cargarDesdeSheets()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">☁️</button>
+      <button onclick="sincronizarConSheets()" style="background:transparent;border:1px solid rgba(61,220,151,.3);color:var(--success);border-radius:50px;padding:8px 12px;font-size:.75rem;cursor:pointer;">💾</button>
+      <button class="btn-add" onclick="abrirModalNuevoLocal()">+ Nuevo Local</button>
+    </div>
   </div>
 </header>
-
 <div class="tabs">
-  <button class="tab active" id="t0">📊 Resumen</button>
-  <button class="tab" id="t1">🏪 Locales</button>
-  <button class="tab" id="t2">💸 Deudas</button>
-  <button class="tab" id="t3">🔔 Alertas</button>
+  <button class="tab active" onclick="cambiarTab('resumen',this)">📊 Resumen</button>
+  <button class="tab" onclick="cambiarTab('locales',this)">🏪 Locales</button>
+  <button class="tab" onclick="cambiarTab('deudas',this)">💸 Deudas</button>
+  <button class="tab" onclick="cambiarTab('alertas',this)">🔔 Alertas</button>
 </div>
-
 <div class="main">
-  <div id="tab0"></div>
-  <div id="tab1" style="display:none"></div>
-  <div id="tab2" style="display:none"></div>
-  <div id="tab3" style="display:none"></div>
+  <div id="tab-resumen"></div>
+  <div id="tab-locales" style="display:none"></div>
+  <div id="tab-deudas" style="display:none"></div>
+  <div id="tab-alertas" style="display:none"></div>
 </div>
 
-<!-- CONFIRM -->
-<div id="confirm-box">
-  <div id="confirm-inner">
-    <div id="confirm-msg"></div>
-    <div id="confirm-btns">
-      <button id="confirm-cancel">Cancelar</button>
-      <button id="confirm-ok">Confirmar</button>
+<!-- MODAL CONFIRMAR PERSONALIZADO -->
+<div id="modal-confirm-overlay">
+  <div id="modal-confirm-box">
+    <div id="modal-confirm-msg"></div>
+    <div id="modal-confirm-btns">
+      <button id="btn-confirm-cancel" onclick="confirmarRespuesta(false)">Cancelar</button>
+      <button id="btn-confirm-ok" onclick="confirmarRespuesta(true)">Confirmar</button>
     </div>
   </div>
 </div>
 
+<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- MODAL LOCAL -->
-<div class="overlay" id="mLocal">
+<!-- MODAL NUEVO/EDITAR LOCAL -->
+<div class="overlay" id="modalLocal" onclick="cerrarSiOverlay(event,'modalLocal')">
   <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="mLocalTit">Nuevo Local</div>
-    <div class="fgrp"><label>Nombre del Local</label><input id="fNom" placeholder="Ej: Local 1"></div>
-    <div class="fgrp"><label>Arrendatario</label><input id="fArr" placeholder="Nombre completo"></div>
-    <div class="frow">
-      <div class="fgrp"><label>Teléfono</label><input id="fTel" type="tel" placeholder="3XX XXX XXXX"></div>
-      <div class="fgrp"><label>Cédula</label><input id="fCed" placeholder="N° doc"></div>
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalLocalTitulo">Nuevo Local</div>
+    <div class="form-group"><label>Nombre del Local</label><input type="text" id="f_nombre" placeholder="Ej: Local 1"></div>
+    <div class="form-group"><label>Arrendatario</label><input type="text" id="f_arrendatario" placeholder="Nombre completo"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Teléfono WhatsApp</label><input type="tel" id="f_tel" placeholder="3XX XXX XXXX"></div>
+      <div class="form-group"><label>Cédula</label><input type="text" id="f_cedula" placeholder="N° documento"></div>
     </div>
-    <div class="frow">
-      <div class="fgrp"><label>Canon ($)</label><input id="fCan" type="number" placeholder="0"></div>
-      <div class="fgrp"><label>Día de pago</label><input id="fDia" type="number" placeholder="15" min="1" max="31"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Canon mensual ($)</label><input type="number" id="f_canon" placeholder="0"></div>
+      <div class="form-group"><label>Día de pago</label><input type="number" id="f_diapago" placeholder="Ej: 15" min="1" max="31"></div>
     </div>
-    <div class="frow">
-      <div class="fgrp"><label>Inicio contrato</label><input id="fIni" type="date"></div>
-      <div class="fgrp"><label>Fin contrato</label><input id="fFin" type="date"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Inicio contrato</label><input type="date" id="f_inicio"></div>
+      <div class="form-group"><label>Fin contrato</label><input type="date" id="f_fin"></div>
     </div>
-    <div class="fgrp"><label>NICs / Notas</label><input id="fObs" placeholder="NIC: XXXXXXX"></div>
-    <input type="hidden" id="fId">
-    <button class="btn-pri" id="btnGuardarLocal">Guardar</button>
-    <button class="btn-sec" id="btnCancelarLocal">Cancelar</button>
+    <div class="form-row">
+      <div class="form-group"><label>Incremento anual (%)</label><input type="number" id="f_incremento" placeholder="Ej: 10" min="0" max="100"></div>
+      <div class="form-group"><label>Mes de incremento</label>
+        <select id="f_mes_incremento">
+          <option value="">-- Seleccione --</option>
+          <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+          <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+          <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+          <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>NICs / Observaciones</label><input type="text" id="f_obs" placeholder="NIC: XXXXXXX"></div>
+    <input type="hidden" id="f_editId">
+    <button class="btn-primary" onclick="guardarLocal()">Guardar</button>
+    <button class="btn-secondary" onclick="cerrarModal('modalLocal')">Cancelar</button>
   </div>
 </div>
 
 <!-- MODAL DETALLE -->
-<div class="overlay" id="mDetalle">
-  <div class="modal" id="mDetalleContent"></div>
+<div class="overlay" id="modalDetalle" onclick="cerrarSiOverlay(event,'modalDetalle')">
+  <div class="modal" id="modalDetalleContent"></div>
 </div>
 
 <!-- MODAL PAGO -->
-<div class="overlay" id="mPago">
+<div class="overlay" id="modalPago" onclick="cerrarSiOverlay(event,'modalPago')">
   <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mtitle">Registrar Pago</div>
-    <div class="fgrp"><label>Mes</label><input id="pMes" type="month"></div>
-    <div class="fgrp"><label>Monto ($)</label><input id="pMonto" type="number" placeholder="0"></div>
-    <div class="fgrp"><label>Medio de pago</label></div>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Registrar Pago</div>
+    <div class="form-group"><label>Mes pagado</label><input type="month" id="p_mes"></div>
+    <div class="form-group"><label>Monto recibido ($)</label><input type="number" id="p_monto" placeholder="0"></div>
+    <div class="form-group"><label>Medio de pago</label></div>
     <div class="medio-btns">
-      <button class="mbtn" id="btnEf">💵 Efectivo</button>
-      <button class="mbtn" id="btnTr">🏦 Transferencia</button>
+      <button class="medio-btn" id="btn_efectivo" onclick="selMedio('efectivo')">💵 Efectivo</button>
+      <button class="medio-btn" id="btn_transferencia" onclick="selMedio('transferencia')">🏦 Transferencia</button>
     </div>
-    <div class="fgrp" id="grpComp" style="display:none"><label>N° Comprobante</label><input id="pComp" placeholder="123456789"></div>
-    <div class="fgrp"><label>Fecha</label><input id="pFecha" type="date"></div>
-    <div class="fgrp"><label>Nota (opcional)</label><input id="pNota" placeholder="Observaciones..."></div>
-    <input type="hidden" id="pLocalId">
-    <button class="btn-pri" id="btnGuardarPago">Registrar Pago</button>
-    <button class="btn-sec" id="btnCancelarPago">Cancelar</button>
+    <div class="form-group" id="grupo_comprobante" style="display:none"><label>N° Comprobante</label><input type="text" id="p_comprobante" placeholder="Ej: 123456789"></div>
+    <div class="form-group"><label>Fecha de pago</label><input type="date" id="p_fecha"></div>
+    <div class="form-group"><label>Nota (opcional)</label><input type="text" id="p_nota" placeholder="Observaciones..."></div>
+    <input type="hidden" id="p_localId">
+    <input type="hidden" id="p_medio" value="">
+    <button class="btn-primary" onclick="guardarPago()">Registrar Pago</button>
+    <button class="btn-secondary" onclick="cerrarModal('modalPago')">Cancelar</button>
   </div>
 </div>
 
-<!-- MODAL DEUDA -->
-<div class="overlay" id="mDeuda">
+<!-- MODAL COBRAR TODOS -->
+<div class="overlay" id="modalCobrar" onclick="cerrarSiOverlay(event,'modalCobrar')">
+  <div class="modal" id="modalCobrarContent"></div>
+</div>
+
+<!-- MODAL NUEVA DEUDA -->
+<div class="overlay" id="modalDeuda" onclick="cerrarSiOverlay(event,'modalDeuda')">
   <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="mDeudaTit">Nueva Deuda</div>
-    <div class="fgrp"><label>Tipo</label>
-      <select id="dTipo">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalDeudaTitulo">Nueva Deuda</div>
+    <div class="form-group"><label>Tipo</label>
+      <select id="d_tipo">
         <option value="propia">💸 Debo yo</option>
         <option value="me-deben">💰 Me deben</option>
-        <option value="recordatorio">🔔 Recordatorio</option>
+        <option value="recordatorio">🔔 Recordatorio de cobro</option>
       </select>
     </div>
-    <div class="fgrp"><label>Nombre</label><input id="dNom" placeholder="Ej: Bancolombia"></div>
-    <div class="frow">
-      <div class="fgrp"><label>Total ($)</label><input id="dTotal" type="number" placeholder="0"></div>
-      <div class="fgrp"><label>Cuota ($)</label><input id="dCuota" type="number" placeholder="0"></div>
+    <div class="form-group"><label>Nombre (banco o persona)</label><input type="text" id="d_nombre" placeholder="Ej: Bancolombia"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Deuda total ($)</label><input type="number" id="d_total" placeholder="0"></div>
+      <div class="form-group"><label>Cuota mensual ($)</label><input type="number" id="d_cuota" placeholder="0"></div>
     </div>
-    <div class="frow">
-      <div class="fgrp"><label>Interés (%)</label><input id="dInteres" type="number" placeholder="2.5" step="0.1"></div>
-      <div class="fgrp"><label>Día de pago</label><input id="dDia" type="number" placeholder="13" min="1" max="31"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Interés mensual (%)</label><input type="number" id="d_interes" placeholder="Ej: 2.5" step="0.1"></div>
+      <div class="form-group"><label>Día de pago</label><input type="number" id="d_dia" placeholder="Ej: 13" min="1" max="31"></div>
     </div>
-    <div class="frow">
-      <div class="fgrp"><label>Cuotas pagadas</label><input id="dPagadas" type="number" placeholder="0"></div>
-      <div class="fgrp"><label>Total cuotas</label><input id="dTotalC" type="number" placeholder="24"></div>
-    </div>
-    <div class="fgrp"><label>Teléfono WA (opcional)</label><input id="dTel" type="tel" placeholder="3XX XXX XXXX"></div>
-    <div class="fgrp"><label>Notas</label><input id="dObs" placeholder="Observaciones..."></div>
-    <input type="hidden" id="dId">
-    <button class="btn-pri" id="btnGuardarDeuda">Guardar</button>
-    <button class="btn-sec" id="btnCancelarDeuda">Cancelar</button>
+    <div class="form-group"><label>Cuotas pagadas</label><input type="number" id="d_pagadas" placeholder="0" min="0"></div>
+    <div class="form-group"><label>Total cuotas</label><input type="number" id="d_totalcuotas" placeholder="Ej: 24" min="0"></div>
+    <div class="form-group"><label>Teléfono WhatsApp (opcional)</label><input type="tel" id="d_tel_deuda" placeholder="3XX XXX XXXX"></div>
+    <div class="form-group"><label>Notas</label><input type="text" id="d_obs" placeholder="Observaciones..."></div>
+    <input type="hidden" id="d_editId">
+    <button class="btn-primary" onclick="guardarDeuda()">Guardar</button>
+    <button class="btn-secondary" onclick="cerrarModal('modalDeuda')">Cancelar</button>
   </div>
 </div>
 
 <!-- MODAL DETALLE DEUDA -->
-<div class="overlay" id="mDeudaDet">
-  <div class="modal" id="mDeudaDetContent"></div>
+<div class="overlay" id="modalDeudaDetalle" onclick="cerrarSiOverlay(event,'modalDeudaDetalle')">
+  <div class="modal" id="modalDeudaDetalleContent"></div>
 </div>
 
 <script>
-var SK = 'mis_locales_v1';
-var MEM = null;
-var MEDIO = '';
-var confirmCb = null;
-var tabActual = 0;
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5xTj7ObZEninD36u8125roQFHEjD2CKIplGJRX31ajE92_AWP3Ecb_2iCHscj40cG/exec';
-
-function getData() {
-  try { var r=JSON.parse(localStorage.getItem(SK)); if(r&&r.locales){MEM=r;return r;} } catch(e){}
-  if(MEM) return MEM;
-  return {locales:[],pagos:[],deudas:[]};
+// ============================================================
+// SISTEMA DE CONFIRMACION PERSONALIZADO
+// ============================================================
+var _confirmCallback = null;
+function mostrarConfirm(msg, okLabel, callback) {
+  okLabel = okLabel || 'Confirmar';
+  document.getElementById('modal-confirm-msg').textContent = msg;
+  document.getElementById('btn-confirm-ok').textContent = okLabel;
+  document.getElementById('modal-confirm-overlay').classList.add('active');
+  _confirmCallback = callback;
 }
-function saveData(d) {
-  MEM=d;
-  try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}
+function confirmarRespuesta(ok) {
+  document.getElementById('modal-confirm-overlay').classList.remove('active');
+  if (_confirmCallback) { var cb = _confirmCallback; _confirmCallback = null; cb(ok); }
 }
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function mesHoy(){var h=new Date();var m=h.getMonth()+1;return h.getFullYear()+'-'+(m<10?'0':'')+m;}
-function fCOP(n){if(!n)return '$0';return '$'+Number(n).toLocaleString('es-CO');}
-function fFecha(f){if(!f)return '—';var p=f.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
-function fMes(ym){if(!ym)return '—';var ms=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];var p=ym.split('-');return ms[parseInt(p[1])-1]+' '+p[0];}
 
-function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';},3000);}
-
-function confirm2(msg, ok, cb) {
-  document.getElementById('confirm-msg').textContent=msg;
-  document.getElementById('confirm-ok').textContent=ok||'Confirmar';
-  document.getElementById('confirm-box').className='open';
-  confirmCb=cb;
+function mostrarToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 3000);
 }
-document.getElementById('confirm-ok').onclick=function(){document.getElementById('confirm-box').className='';if(confirmCb)confirmCb(true);confirmCb=null;};
-document.getElementById('confirm-cancel').onclick=function(){document.getElementById('confirm-box').className='';if(confirmCb)confirmCb(false);confirmCb=null;};
 
-function estadoLocal(l,pagos){
-  if(!l.arrendatario) return 'sin-arr';
-  if(pagos.some(function(p){return p.localId===l.id&&p.mes===mesHoy();})) return 'al-dia';
+// ============================================================
+// DATOS
+// ============================================================
+var STORE_KEY = 'mis_locales_v1';
+function cargarDatos() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {locales:[],pagos:[]}; }
+  catch(e) { return {locales:[],pagos:[]}; }
+}
+function guardarDatos(d) { localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function mesActual() { var h=new Date(); return h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0'); }
+function fmtCOP(n) { if(!n) return '$0'; return '$'+Number(n).toLocaleString('es-CO'); }
+function formatFecha(f) { if(!f) return '—'; var p=f.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function formatMes(ym) {
+  if(!ym) return '—';
+  var ms=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var p=ym.split('-'); return ms[parseInt(p[1])-1]+' '+p[0];
+}
+function mesesEnLocal(l) {
+  if(!l.inicioContrato) return null;
+  var inicio=new Date(l.inicioContrato), hoy=new Date();
+  var meses=(hoy.getFullYear()-inicio.getFullYear())*12+(hoy.getMonth()-inicio.getMonth());
+  return Math.max(0,meses);
+}
+
+// ============================================================
+// TABS
+// ============================================================
+var tabActual = 'resumen';
+function cambiarTab(tab, el) {
+  tabActual = tab;
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  ['resumen','locales','deudas','alertas'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  renderAll();
+}
+function renderAll() {
+  if(tabActual==='resumen') renderResumen();
+  if(tabActual==='locales') renderLocales();
+  if(tabActual==='deudas') renderDeudas();
+  if(tabActual==='alertas') renderAlertas();
+}
+
+function estadoLocal(l, pagos) {
+  if(!l.arrendatario) return 'sin-arrendatario';
+  if(pagos.some(function(p){ return p.localId===l.id && p.mes===mesActual(); })) return 'al-dia';
+  if(l.finContrato){ var diff=(new Date(l.finContrato)-new Date())/86400000; if(diff>=0&&diff<=30) return 'vence-pronto'; }
   return 'vencido';
 }
+function pagaHoy(l) { return l.diaPago && l.arrendatario && new Date().getDate()===parseInt(l.diaPago); }
 
-// TABS
-function showTab(n) {
-  tabActual=n;
-  for(var i=0;i<4;i++){
-    document.getElementById('t'+i).className='tab'+(i===n?' active':'');
-    document.getElementById('tab'+i).style.display=i===n?'':'none';
+// ============================================================
+// INCREMENTO
+// ============================================================
+function canonActual(l) {
+  if(!l.incrementoPct || !l.mesIncremento || !l.inicioContrato) return Number(l.canon)||0;
+  var inicio=new Date(l.inicioContrato), hoy=new Date();
+  var anios=0;
+  var check=new Date(inicio.getFullYear()+1, parseInt(l.mesIncremento)-1, 1);
+  while(check<=hoy){ anios++; check.setFullYear(check.getFullYear()+1); }
+  return Math.round((Number(l.canon)||0)*Math.pow(1+(Number(l.incrementoPct)||0)/100, anios));
+}
+function canonProximoAnio(l) {
+  return Math.round(canonActual(l)*(1+(Number(l.incrementoPct)||0)/100));
+}
+
+// ============================================================
+// ESTADO MENSUAL DE DEUDAS
+// ============================================================
+function keyEstadoDeuda(deudaId) {
+  return 'deuda_estado_' + deudaId + '_' + mesActual();
+}
+function getEstadoDeudaMes(deudaId) {
+  return localStorage.getItem(keyEstadoDeuda(deudaId)) || 'pendiente';
+}
+function setEstadoDeudaMes(deudaId, estado) {
+  localStorage.setItem(keyEstadoDeuda(deudaId), estado);
+}
+function toggleEstadoDeuda(deudaId, estado) {
+  setEstadoDeudaMes(deudaId, estado);
+  renderDeudas();
+  // Actualizar el detalle si está abierto
+  var det = document.getElementById('modalDeudaDetalleContent');
+  if(det && det.innerHTML) verDetalleDeuda(deudaId);
+}
+
+// ============================================================
+// ALARMAS DE DEUDAS
+// ============================================================
+function programarAlarmaDeuda(deudaId) {
+  var d = cargarDatosDeudas();
+  var x = d.deudas.find(function(i){ return i.id === deudaId; });
+  if(!x || !x.dia) { mostrarToast('⚠️ Esta deuda no tiene día de pago'); return; }
+
+  // Construir la fecha del próximo vencimiento
+  var hoy = new Date();
+  var anio = hoy.getFullYear();
+  var mes = hoy.getMonth();
+  var diaVenc = parseInt(x.dia);
+
+  var fechaAlarm = new Date(anio, mes, diaVenc, 8, 0, 0);
+  // Si ya pasó este mes, alarma el mes siguiente
+  if(fechaAlarm <= hoy) {
+    mes += 1;
+    if(mes > 11) { mes = 0; anio += 1; }
+    fechaAlarm = new Date(anio, mes, diaVenc, 8, 0, 0);
   }
-  render();
-}
-document.getElementById('t0').onclick=function(){showTab(0);};
-document.getElementById('t1').onclick=function(){showTab(1);};
-document.getElementById('t2').onclick=function(){showTab(2);};
-document.getElementById('t3').onclick=function(){showTab(3);};
 
-function render(){
-  if(tabActual===0) renderResumen();
-  if(tabActual===1) renderLocales();
-  if(tabActual===2) renderDeudas();
-  if(tabActual===3) renderAlertas();
+  // Intentar Notification API como fallback informativo
+  var fechaStr = diaVenc + '/' + String(mes+1).padStart(2,'0') + '/' + anio;
+  var mesesNombres = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+  // Verificar soporte de Notificaciones
+  if(!('Notification' in window)) {
+    mostrarToast('⚠️ Las alarmas no están disponibles en este navegador');
+    return;
+  }
+
+  Notification.requestPermission().then(function(perm){
+    if(perm === 'granted') {
+      // Programar notificacion con setTimeout (funciona mientras la app esté abierta)
+      var msRestantes = fechaAlarm.getTime() - Date.now();
+
+      // Guardar en localStorage para persistencia
+      var alarmas = JSON.parse(localStorage.getItem('deuda_alarmas') || '{}');
+      alarmas[deudaId] = {
+        nombre: x.nombre,
+        dia: x.dia,
+        cuota: x.cuota,
+        fechaProxima: fechaAlarm.getTime()
+      };
+      localStorage.setItem('deuda_alarmas', JSON.stringify(alarmas));
+
+      mostrarToast('🔔 Alarma programada: ' + diaVenc + ' de ' + mesesNombres[mes] + ' a las 8:00 a.m.');
+
+      // Si la alarma es en menos de 24h, programar con setTimeout
+      if(msRestantes < 86400000 && msRestantes > 0) {
+        setTimeout(function(){
+          new Notification('💸 Pago pendiente: ' + x.nombre, {
+            body: 'Cuota de ' + fmtCOP(x.cuota) + ' vence hoy (día ' + x.dia + ')',
+            icon: ''
+          });
+        }, msRestantes);
+      }
+    } else {
+      mostrarToast('⚠️ Permiso de notificaciones denegado');
+    }
+  });
 }
 
+// Revisar alarmas guardadas al cargar la app
+function revisarAlarmasGuardadas() {
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  var alarmas = JSON.parse(localStorage.getItem('deuda_alarmas') || '{}');
+  var ahora = Date.now();
+  Object.keys(alarmas).forEach(function(id){
+    var a = alarmas[id];
+    var msRestantes = a.fechaProxima - ahora;
+    if(msRestantes > 0 && msRestantes < 86400000) {
+      setTimeout(function(){
+        new Notification('💸 Pago pendiente: ' + a.nombre, {
+          body: 'Cuota de ' + fmtCOP(a.cuota) + ' vence hoy (día ' + a.dia + ')',
+          icon: ''
+        });
+      }, msRestantes);
+    }
+  });
+}
+
+// ============================================================
 // RESUMEN
-function renderResumen(){
-  var d=getData(), mc=mesHoy(), hoy=new Date();
-  var conArr=d.locales.filter(function(l){return l.arrendatario;});
-  var pagados={};
-  d.pagos.forEach(function(p){if(p.mes===mc)pagados[p.localId]=true;});
-  var nPag=Object.keys(pagados).length;
-  var pendientes=conArr.filter(function(l){return !pagados[l.id];});
-  var porCobrar=pendientes.reduce(function(s,l){return s+(Number(l.canon)||0);},0);
-  var recibido=d.pagos.filter(function(p){return p.mes===mc;}).reduce(function(s,p){return s+(Number(p.monto)||0);},0);
-
-  var h='<div class="grid2">';
-  h+='<div class="card"><div class="lbl">Locales activos</div><div class="val yellow">'+conArr.length+'</div></div>';
-  h+='<div class="card"><div class="lbl">Al día</div><div class="val green">'+nPag+'</div></div>';
-  h+='<div class="card"><div class="lbl">Por cobrar</div><div class="val red">'+fCOP(porCobrar)+'</div></div>';
-  h+='<div class="card"><div class="lbl">Recibido</div><div class="val green">'+fCOP(recibido)+'</div></div>';
-  h+='</div>';
-
-  if(pendientes.length>0){
-    h+='<button class="btn-wa-all" id="btnWaAll">💬 Cobrar a todos ('+pendientes.length+') — '+fCOP(porCobrar)+'</button>';
+// ============================================================
+function renderResumen() {
+  var d=cargarDatos(), mc=mesActual(), hoy=new Date();
+  var conArr=d.locales.filter(function(l){ return l.arrendatario; });
+  var pagadosMes=d.pagos.filter(function(p){ return p.mes===mc; });
+  var localesPagados=new Set(pagadosMes.map(function(p){ return p.localId; }));
+  var pendientes=conArr.filter(function(l){ return !localesPagados.has(l.id); });
+  var totalPorCobrar=pendientes.reduce(function(s,l){ return s+(canonActual(l)||0); },0);
+  var totalRecibido=pagadosMes.reduce(function(s,p){ return s+(Number(p.monto)||0); },0);
+  var paganHoy=conArr.filter(pagaHoy);
+  var vencenPronto=d.locales.filter(function(l){
+    if(!l.finContrato||!l.arrendatario) return false;
+    var diff=(new Date(l.finContrato)-hoy)/86400000;
+    return diff>=0&&diff<=60;
+  });
+  var html = '<div class="summary-grid">';
+  html += '<div class="s-card"><div class="label">Locales activos</div><div class="value yellow">'+conArr.length+'</div></div>';
+  html += '<div class="s-card"><div class="label">Al día este mes</div><div class="value green">'+localesPagados.size+'</div></div>';
+  html += '<div class="s-card"><div class="label">Por cobrar</div><div class="value red" style="font-size:1.05rem">'+fmtCOP(totalPorCobrar)+'</div></div>';
+  html += '<div class="s-card"><div class="label">Recibido este mes</div><div class="value green" style="font-size:1.05rem">'+fmtCOP(totalRecibido)+'</div></div>';
+  html += '</div>';
+  if(pendientes.length>0) html += '<button class="btn-cobrar-todos" onclick="abrirCobrarTodos()">💬 Cobrar a todos por WhatsApp ('+pendientes.length+' · '+fmtCOP(totalPorCobrar)+')</button>';
+  if(paganHoy.length>0) {
+    html += '<div class="section-title">🔔 Pagan hoy — día '+hoy.getDate()+'</div>';
+    paganHoy.forEach(function(l){
+      var pagado=localesPagados.has(l.id);
+      html += '<div class="local-card '+(pagado?'al-dia':'vencido')+'" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+'</div><div class="local-num">'+l.arrendatario+'</div></div>'+(pagado?'<span class="badge pagado">✓ Pagó</span>':'<span class="badge hoy">Paga hoy</span>')+'</div><div class="local-info"><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div><div class="info-item"><div class="lbl">Tel.</div><div class="val">'+(l.telefono||'—')+'</div></div></div></div>';
+    });
   }
-
-  h+='<div class="sec">Pendientes de pago</div>';
-  if(pendientes.length===0){
-    h+='<div class="empty">🎉 Todos al día este mes!</div>';
+  html += '<div class="section-title" style="margin-top:'+(paganHoy.length>0?'20px':'0')+'">Pendientes de pago</div>';
+  if(pendientes.length===0) {
+    html += '<div class="empty"><div class="icon">🎉</div><p>Todos al día este mes!</p></div>';
   } else {
     pendientes.forEach(function(l){
-      h+='<div class="lcard vencido" data-id="'+l.id+'">';
-      h+='<div class="lcard-top"><div><div class="lcard-nom">'+l.nombre+'</div><div class="lcard-sub">'+l.arrendatario+'</div></div><span class="badge pendiente">Sin pago</span></div>';
-      h+='<div class="lcard-info"><div><div class="lbl2">Canon</div><div class="val2">'+fCOP(l.canon)+'</div></div><div><div class="lbl2">Día pago</div><div class="val2">Día '+(l.diaPago||'—')+'</div></div></div>';
-      h+='</div>';
+      html += '<div class="local-card vencido" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+'</div><div class="local-num">'+l.arrendatario+'</div></div><span class="badge pendiente">Sin pago</span></div><div class="local-info"><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div><div class="info-item"><div class="lbl">Día pago</div><div class="val">Día '+(l.diaPago||'—')+'</div></div></div></div>';
     });
   }
-
-  document.getElementById('tab0').innerHTML=h;
-
-  // eventos
-  document.querySelectorAll('#tab0 .lcard').forEach(function(el){
-    el.onclick=function(){abrirDetalle(this.getAttribute('data-id'));};
-  });
-  var bwa=document.getElementById('btnWaAll');
-  if(bwa) bwa.onclick=function(){cobrarTodos();};
+  if(vencenPronto.length>0) {
+    html += '<div class="section-title" style="margin-top:20px">Contratos por vencer</div>';
+    vencenPronto.forEach(function(l){
+      var dias=Math.ceil((new Date(l.finContrato)-hoy)/86400000);
+      html += '<div class="local-card vence-pronto" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+'</div><div class="local-num">'+l.arrendatario+'</div></div><span class="badge vence">Vence en '+dias+'d</span></div><div class="local-info"><div class="info-item"><div class="lbl">Fin contrato</div><div class="val">'+formatFecha(l.finContrato)+'</div></div><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div></div></div>';
+    });
+  }
+  document.getElementById('tab-resumen').innerHTML = html;
 }
 
+// ============================================================
 // LOCALES
-function renderLocales(){
-  var d=getData(), mc=mesHoy();
-  var pagados={};
-  d.pagos.forEach(function(p){if(p.mes===mc)pagados[p.localId]=true;});
-  var h='<div class="sec">'+d.locales.length+' locales registrados</div>';
-  if(d.locales.length===0){h='<div class="empty">🏪 Sin locales aún</div>';}
+// ============================================================
+function renderLocales() {
+  var d=cargarDatos();
+  var el=document.getElementById('tab-locales');
+  if(d.locales.length===0){ el.innerHTML='<div class="empty"><div class="icon">🏪</div><p>Aún no tienes locales.</p></div>'; return; }
+  var bm={'al-dia':'<span class="badge pagado">Al día</span>','vence-pronto':'<span class="badge vence">Contrato próximo</span>','vencido':'<span class="badge pendiente">Sin pago</span>','sin-arrendatario':'<span class="badge libre">Disponible</span>'};
+  var html = '<div class="section-title">'+d.locales.length+' locales registrados</div>';
   d.locales.forEach(function(l){
-    var est=estadoLocal(l,d.pagos);
-    var badge=est==='al-dia'?'<span class="badge pagado">Al día</span>':est==='vencido'?'<span class="badge pendiente">Sin pago</span>':'<span class="badge libre">Disponible</span>';
-    h+='<div class="lcard '+est+'" data-id="'+l.id+'">';
-    h+='<div class="lcard-top"><div><div class="lcard-nom">'+l.nombre+'</div><div class="lcard-sub">'+(l.arrendatario||'Sin arrendatario')+'</div></div>'+badge+'</div>';
-    h+='<div class="lcard-info"><div><div class="lbl2">Canon</div><div class="val2">'+fCOP(l.canon)+'</div></div><div><div class="lbl2">Día pago</div><div class="val2">Día '+(l.diaPago||'—')+'</div></div></div>';
-    h+='</div>';
+    var estado=estadoLocal(l,d.pagos);
+    var meses=mesesEnLocal(l);
+    html += '<div class="local-card '+estado+'" onclick="verDetalle(\''+l.id+'\')"><div class="local-header"><div><div class="local-nombre">'+l.nombre+(meses!==null?'<span class="meses-badge">'+meses+' mes'+(meses!==1?'es':'')+'</span>':'')+'</div><div class="local-num">'+(l.arrendatario||'Sin arrendatario')+'</div></div>'+(bm[estado]||'')+'</div><div class="local-info"><div class="info-item"><div class="lbl">Canon</div><div class="val">'+fmtCOP(canonActual(l))+'</div></div><div class="info-item"><div class="lbl">Día de pago</div><div class="val">Día '+(l.diaPago||'—')+'</div></div><div class="info-item"><div class="lbl">Tel.</div><div class="val">'+(l.telefono||'—')+'</div></div>'+(l.incrementoPct?'<div class="info-item"><div class="lbl">Incremento</div><div class="val">'+l.incrementoPct+'% anual</div></div>':'')+'</div></div>';
   });
-  document.getElementById('tab1').innerHTML=h;
-  document.querySelectorAll('#tab1 .lcard').forEach(function(el){
-    el.onclick=function(){abrirDetalle(this.getAttribute('data-id'));};
-  });
+  el.innerHTML = html;
 }
 
-// DEUDAS
-function renderDeudas(){
-  var d=getData();
-  if(!d.deudas) d.deudas=[];
-  var propias=d.deudas.filter(function(x){return x.tipo==='propia';});
-  var meDeben=d.deudas.filter(function(x){return x.tipo==='me-deben';});
-  var recordatorios=d.deudas.filter(function(x){return x.tipo==='recordatorio';});
-  var totalDeuda=propias.reduce(function(s,x){return s+(Number(x.total)||0);},0);
-  var totalCuotas=propias.reduce(function(s,x){return s+(Number(x.cuota)||0);},0);
-  var totalArr=d.locales.filter(function(l){return l.arrendatario;}).reduce(function(s,l){return s+(Number(l.canon)||0);},0);
-  var libre=totalArr-totalCuotas;
-
-  var h='<div class="grid2">';
-  h+='<div class="card"><div class="lbl">Total deuda</div><div class="val red" style="font-size:1.1rem">'+fCOP(totalDeuda)+'</div></div>';
-  h+='<div class="card"><div class="lbl">Cuotas mes</div><div class="val red" style="font-size:1.1rem">'+fCOP(totalCuotas)+'</div></div>';
-  h+='<div class="card"><div class="lbl">Arriendos mes</div><div class="val green" style="font-size:1.1rem">'+fCOP(totalArr)+'</div></div>';
-  h+='<div class="card"><div class="lbl">Libre al mes</div><div class="val '+(libre>=0?'green':'red')+'" style="font-size:1.1rem">'+fCOP(libre)+'</div></div>';
-  h+='</div>';
-  h+='<button class="btn-wa-all" style="background:#ff4f6d" id="btnNuevaDeuda">+ Nueva deuda / Me deben / Recordatorio</button>';
-
-  if(propias.length>0){
-    h+='<div class="sec">💸 Lo que debo</div>';
-    propias.forEach(function(x){
-      var pag=Number(x.pagadas)||0, tot=Number(x.totalCuotas)||0;
-      var faltan=tot>0?tot-pag:null;
-      var pct=tot>0?Math.min(100,Math.round(pag/tot*100)):0;
-      h+='<div class="lcard vencido" data-did="'+x.id+'">';
-      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.interes?x.interes+'% mensual':'')+'</div></div><span class="badge pendiente">'+(faltan!==null?faltan+' cuotas':'')+'</span></div>';
-      h+='<div class="lcard-info"><div><div class="lbl2">Cuota</div><div class="val2">'+fCOP(x.cuota)+'</div></div><div><div class="lbl2">Día pago</div><div class="val2">Día '+(x.dia||'—')+'</div></div><div><div class="lbl2">Total</div><div class="val2">'+fCOP(x.total)+'</div></div>'+(faltan!==null?'<div><div class="lbl2">Pagadas</div><div class="val2">'+pag+' de '+tot+'</div></div>':'')+'</div>';
-      if(tot>0) h+='<div style="background:#22263a;border-radius:50px;height:6px;margin-top:10px;overflow:hidden"><div style="height:6px;border-radius:50px;background:linear-gradient(90deg,#3ddc97,#f5a623);width:'+pct+'%"></div></div>';
-      h+='</div>';
-    });
-  }
-
-  if(meDeben.length>0){
-    h+='<div class="sec">💰 Me deben</div>';
-    meDeben.forEach(function(x){
-      h+='<div class="lcard al-dia" data-did="'+x.id+'">';
-      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.obs||'')+'</div></div><span class="badge pagado">Me deben</span></div>';
-      h+='<div class="lcard-info"><div><div class="lbl2">Valor</div><div class="val2">'+fCOP(x.total)+'</div></div>'+(x.cuota?'<div><div class="lbl2">Cuota</div><div class="val2">'+fCOP(x.cuota)+'</div></div>':'')+'</div>';
-      h+='</div>';
-    });
-  }
-
-  if(recordatorios.length>0){
-    h+='<div class="sec">🔔 Recordatorios</div>';
-    recordatorios.forEach(function(x){
-      h+='<div class="lcard" style="border-left:3px solid #f5a623" data-did="'+x.id+'">';
-      h+='<div class="lcard-top"><div><div class="lcard-nom">'+x.nombre+'</div><div class="lcard-sub">'+(x.obs||'')+'</div></div><span class="badge" style="background:rgba(245,166,35,.2);color:#f5a623">Día '+(x.dia||'?')+'</span></div>';
-      if(x.cuota) h+='<div class="lcard-info"><div><div class="lbl2">Valor</div><div class="val2">'+fCOP(x.cuota)+'</div></div></div>';
-      h+='</div>';
-    });
-  }
-
-  if(d.deudas.length===0) h+='<div class="empty">✅ Sin deudas registradas</div>';
-
-  document.getElementById('tab2').innerHTML=h;
-
-  document.querySelectorAll('#tab2 .lcard').forEach(function(el){
-    el.onclick=function(){abrirDetalleDeuda(this.getAttribute('data-did'));};
-  });
-  var bn=document.getElementById('btnNuevaDeuda');
-  if(bn) bn.onclick=function(){abrirModalDeuda();};
-}
-
-function abrirModalDeuda(id){
-  ['dId','dNom','dTotal','dCuota','dInteres','dDia','dPagadas','dTotalC','dTel','dObs'].forEach(function(x){document.getElementById(x).value='';});
-  document.getElementById('dTipo').value='propia';
-  if(id){
-    var d=getData(); if(!d.deudas) d.deudas=[];
-    var x=d.deudas.find(function(i){return i.id===id;});
-    if(x){
-      document.getElementById('dId').value=x.id;
-      document.getElementById('dTipo').value=x.tipo||'propia';
-      document.getElementById('dNom').value=x.nombre||'';
-      document.getElementById('dTotal').value=x.total||'';
-      document.getElementById('dCuota').value=x.cuota||'';
-      document.getElementById('dInteres').value=x.interes||'';
-      document.getElementById('dDia').value=x.dia||'';
-      document.getElementById('dPagadas').value=x.pagadas||'';
-      document.getElementById('dTotalC').value=x.totalCuotas||'';
-      document.getElementById('dTel').value=x.telefono||'';
-      document.getElementById('dObs').value=x.obs||'';
-    }
-  }
-  document.getElementById('mDeudaTit').textContent=id?'Editar':'Nueva Deuda';
-  document.getElementById('mDeudaDet').className='overlay';
-  document.getElementById('mDeuda').className='overlay open';
-}
-
-document.getElementById('btnGuardarDeuda').onclick=function(){
-  var nom=document.getElementById('dNom').value.trim();
-  if(!nom){toast('⚠️ Escribe el nombre');return;}
-  var d=getData(); if(!d.deudas) d.deudas=[];
-  var eid=document.getElementById('dId').value;
-  var item={id:eid||uid(),tipo:document.getElementById('dTipo').value,nombre:nom,total:document.getElementById('dTotal').value,cuota:document.getElementById('dCuota').value,interes:document.getElementById('dInteres').value,dia:document.getElementById('dDia').value,pagadas:document.getElementById('dPagadas').value,totalCuotas:document.getElementById('dTotalC').value,telefono:document.getElementById('dTel').value.trim(),obs:document.getElementById('dObs').value.trim()};
-  if(eid){var i=d.deudas.findIndex(function(x){return x.id===eid;});if(i!==-1)d.deudas[i]=item;}
-  else d.deudas.push(item);
-  saveData(d);
-  document.getElementById('mDeuda').className='overlay';
-  render();
-};
-document.getElementById('btnCancelarDeuda').onclick=function(){document.getElementById('mDeuda').className='overlay';};
-document.getElementById('mDeuda').onclick=function(e){if(e.target===this)this.className='overlay';};
-
-function abrirDetalleDeuda(id){
-  var d=getData(); if(!d.deudas) d.deudas=[];
-  var x=d.deudas.find(function(i){return i.id===id;});
-  if(!x) return;
-  var pag=Number(x.pagadas)||0, tot=Number(x.totalCuotas)||0;
-  var faltan=tot>0?tot-pag:null;
-  var pct=tot>0?Math.min(100,Math.round(pag/tot*100)):0;
-  var intMes=x.interes&&x.total?Math.round(Number(x.total)*Number(x.interes)/100):0;
-  var h='<div class="mhandle"></div><div class="mtitle">'+x.nombre+'</div>';
-  h+='<div class="lcard-info" style="gap:12px;margin-bottom:16px">';
-  if(x.total) h+='<div><div class="lbl2">Deuda total</div><div class="val2">'+fCOP(x.total)+'</div></div>';
-  if(x.cuota) h+='<div><div class="lbl2">Cuota mensual</div><div class="val2">'+fCOP(x.cuota)+'</div></div>';
-  if(x.interes) h+='<div><div class="lbl2">Interés mensual</div><div class="val2">'+x.interes+'%</div></div>';
-  if(intMes) h+='<div><div class="lbl2">Interés en $</div><div class="val2" style="color:#ff4f6d">'+fCOP(intMes)+'/mes</div></div>';
-  if(x.dia) h+='<div><div class="lbl2">Día de pago</div><div class="val2">Día '+x.dia+'</div></div>';
-  if(faltan!==null) h+='<div><div class="lbl2">Pagadas</div><div class="val2">'+pag+' de '+tot+'</div></div><div><div class="lbl2">Faltan</div><div class="val2" style="color:#ff4f6d">'+faltan+'</div></div>';
-  if(x.obs) h+='<div style="grid-column:1/-1"><div class="lbl2">Notas</div><div class="val2">'+x.obs+'</div></div>';
-  h+='</div>';
-  if(tot>0) h+='<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:.75rem;color:#7a7f9a;margin-bottom:6px"><span>Progreso</span><span>'+pct+'% pagado</span></div><div style="background:#22263a;border-radius:50px;height:6px;overflow:hidden"><div style="height:6px;border-radius:50px;background:linear-gradient(90deg,#3ddc97,#f5a623);width:'+pct+'%"></div></div></div>';
-  h+='<div class="dbtns">';
-  h+='<button class="dbtn pago" id="dd-cuota">✅ Registrar cuota</button>';
-  if(x.telefono) h+='<button class="dbtn wa" id="dd-wa">💬 WhatsApp</button>';
-  h+='<button class="dbtn edit" id="dd-edit">✏️ Editar</button>';
-  h+='<button class="dbtn del" id="dd-del">🗑️</button>';
-  h+='</div>';
-  document.getElementById('mDeudaDetContent').innerHTML=h;
-  document.getElementById('mDeudaDet').className='overlay open';
-
-  document.getElementById('dd-cuota').onclick=function(){
-    var d2=getData(); if(!d2.deudas) d2.deudas=[];
-    var x2=d2.deudas.find(function(i){return i.id===id;});
-    if(!x2) return;
-    x2.pagadas=(Number(x2.pagadas)||0)+1;
-    saveData(d2); toast('✅ Cuota registrada'); document.getElementById('mDeudaDet').className='overlay'; render();
-  };
-  var ddw=document.getElementById('dd-wa');
-  if(ddw) ddw.onclick=function(){
-    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-    var hoy=new Date(), mes=meses[hoy.getMonth()], anio=hoy.getFullYear();
-    var msg='Hola '+x.nombre+' 👋\n\nLe recuerdo el pago pendiente de '+mes+' '+anio+'.\n\n💰 Valor: '+fCOP(x.cuota)+'\n📅 Día: '+x.dia+' de '+mes+'\n\n🏦 Bancolombia Ahorros: 687-761838-34\n👤 Jems Hoyos\n\nGracias! 🙏';
-    window.open('https://wa.me/57'+x.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
-  };
-  document.getElementById('dd-edit').onclick=function(){abrirModalDeuda(id);};
-  document.getElementById('dd-del').onclick=function(){
-    confirm2('¿Eliminar esta deuda?','Eliminar',function(ok){
-      if(!ok) return;
-      var d2=getData(); if(!d2.deudas) d2.deudas=[];
-      d2.deudas=d2.deudas.filter(function(i){return i.id!==id;});
-      saveData(d2); document.getElementById('mDeudaDet').className='overlay'; render();
-    });
-  };
-}
-document.getElementById('mDeudaDet').onclick=function(e){if(e.target===this)this.className='overlay';};
-
+// ============================================================
 // ALERTAS
-function renderAlertas(){
-  var d=getData(), mc=mesHoy(), hoy=new Date();
-  var pagados={};
-  d.pagos.forEach(function(p){if(p.mes===mc)pagados[p.localId]=true;});
+// ============================================================
+function renderAlertas() {
+  var d=cargarDatos(), hoy=new Date(), mc=mesActual();
   var alertas=[];
   d.locales.forEach(function(l){
     if(!l.arrendatario) return;
-    if(!pagados[l.id]) alertas.push({icon:'💸',titulo:l.nombre+' — Sin pago este mes',sub:l.arrendatario+' · '+fCOP(l.canon),id:l.id});
+    if(pagaHoy(l)){
+      var pagado=d.pagos.some(function(p){ return p.localId===l.id && p.mes===mc; });
+      alertas.push({icon:pagado?'✅':'🔔',titulo:l.nombre+' — Paga HOY (día '+l.diaPago+')',sub:l.arrendatario+' · '+fmtCOP(canonActual(l))+' · '+(pagado?'Ya registrado':'Pendiente'),id:l.id});
+    }
+    var pagadoMes=d.pagos.some(function(p){ return p.localId===l.id && p.mes===mc; });
+    if(!pagadoMes&&!pagaHoy(l)) alertas.push({icon:'💸',titulo:l.nombre+' — Sin pago este mes',sub:l.arrendatario+' · '+fmtCOP(canonActual(l))+' · Día '+(l.diaPago||'?'),id:l.id});
     if(l.finContrato){
       var diff=Math.ceil((new Date(l.finContrato)-hoy)/86400000);
-      if(diff>=0&&diff<=30) alertas.push({icon:'⚠️',titulo:l.nombre+' — Vence en '+diff+' días',sub:l.arrendatario+' · '+fFecha(l.finContrato),id:l.id});
-      if(diff<0) alertas.push({icon:'🔴',titulo:l.nombre+' — Contrato vencido',sub:l.arrendatario+' · '+fFecha(l.finContrato),id:l.id});
+      if(diff>=0&&diff<=30) alertas.push({icon:'⚠️',titulo:l.nombre+' — Contrato vence en '+diff+' días',sub:l.arrendatario+' · '+formatFecha(l.finContrato),id:l.id});
+      else if(diff<0) alertas.push({icon:'🔴',titulo:l.nombre+' — Contrato vencido',sub:l.arrendatario+' · Venció el '+formatFecha(l.finContrato),id:l.id});
+    }
+    if(l.incrementoPct&&l.mesIncremento&&hoy.getMonth()+1===parseInt(l.mesIncremento)){
+      alertas.push({icon:'📈',titulo:l.nombre+' — Mes de incremento',sub:l.arrendatario+' · Canon sube a '+fmtCOP(canonProximoAnio(l))+' ('+l.incrementoPct+'%)',id:l.id});
     }
   });
-  var h='<div class="sec">'+alertas.length+' alertas</div>';
-  if(alertas.length===0){h='<div class="empty">✅ Sin alertas</div>';}
+  var el=document.getElementById('tab-alertas');
+  if(alertas.length===0){ el.innerHTML='<div class="empty"><div class="icon">✅</div><p>Sin alertas pendientes.</p></div>'; return; }
+  var html='<div class="section-title">'+alertas.length+' alerta'+(alertas.length!==1?'s':'')+'</div><div class="alertas-list">';
   alertas.forEach(function(a){
-    h+='<div class="lcard vencido" data-id="'+a.id+'" style="cursor:pointer"><div class="lcard-top"><div style="font-size:1.5rem">'+a.icon+'</div><div><div class="lcard-nom" style="font-size:.9rem">'+a.titulo+'</div><div class="lcard-sub">'+a.sub+'</div></div></div></div>';
+    html += '<div class="alerta-card" onclick="verDetalle(\''+a.id+'\')"><div class="alerta-icon">'+a.icon+'</div><div class="alerta-texto"><div class="titulo">'+a.titulo+'</div><div class="sub">'+a.sub+'</div></div></div>';
   });
-  document.getElementById('tab3').innerHTML=h;
-  document.querySelectorAll('#tab3 .lcard').forEach(function(el){
-    el.onclick=function(){abrirDetalle(this.getAttribute('data-id'));};
-  });
+  html += '</div>';
+  el.innerHTML = html;
 }
 
-// DETALLE
-function abrirDetalle(id){
-  var d=getData(), l=d.locales.find(function(x){return x.id===id;});
-  if(!l) return;
-  var pagosL=d.pagos.filter(function(p){return p.localId===id;}).sort(function(a,b){return b.mes.localeCompare(a.mes);});
-  var h='<div class="mhandle"></div>';
-  h+='<div class="mtitle">'+l.nombre+'</div>';
-  h+='<div style="color:#7a7f9a;font-size:.85rem;margin-top:-12px;margin-bottom:14px">'+(l.arrendatario||'Sin arrendatario')+'</div>';
-  h+='<div class="lcard-info" style="gap:12px">';
-  if(l.telefono) h+='<div><div class="lbl2">WhatsApp</div><div class="val2">'+l.telefono+'</div></div>';
-  if(l.canon) h+='<div><div class="lbl2">Canon</div><div class="val2">'+fCOP(l.canon)+'</div></div>';
-  if(l.diaPago) h+='<div><div class="lbl2">Día de pago</div><div class="val2">Día '+l.diaPago+'</div></div>';
-  if(l.finContrato) h+='<div><div class="lbl2">Fin contrato</div><div class="val2">'+fFecha(l.finContrato)+'</div></div>';
-  if(l.obs) h+='<div style="grid-column:1/-1"><div class="lbl2">NICs / Notas</div><div class="val2">'+l.obs+'</div></div>';
-  h+='</div>';
-  h+='<div class="dbtns">';
-  if(l.arrendatario) h+='<button class="dbtn pago" id="db-pago">💵 Pago</button>';
-  if(l.arrendatario&&l.telefono) h+='<button class="dbtn wa" id="db-wa">💬 WhatsApp</button>';
-  h+='<button class="dbtn edit" id="db-edit">✏️ Editar</button>';
-  h+='<button class="dbtn del" id="db-del">🗑️</button>';
-  h+='</div>';
-  h+='<div class="sec" style="margin-top:16px">Historial de pagos</div>';
-  if(pagosL.length===0){h+='<div style="color:#7a7f9a;font-size:.85rem">Sin pagos</div>';}
-  pagosL.forEach(function(p){
-    h+='<div class="pitem"><div><div style="font-weight:500">'+fMes(p.mes)+'</div><div style="font-size:.7rem;color:#7a7f9a">'+fFecha(p.fecha)+(p.nota?' · '+p.nota:'')+'</div></div><div style="display:flex;align-items:center;gap:6px"><span class="pmonto">'+fCOP(p.monto)+'</span><button class="pdel" data-pid="'+p.id+'" data-lid="'+id+'">×</button></div></div>';
-  });
-  document.getElementById('mDetalleContent').innerHTML=h;
-  document.getElementById('mDetalle').className='overlay open';
-
-  var dbp=document.getElementById('db-pago');
-  if(dbp) dbp.onclick=function(){abrirPago(id);};
-  var dbw=document.getElementById('db-wa');
-  if(dbw) dbw.onclick=function(){enviarWA(id);};
-  var dbe=document.getElementById('db-edit');
-  if(dbe) dbe.onclick=function(){editarLocal(id);};
-  var dbd=document.getElementById('db-del');
-  if(dbd) dbd.onclick=function(){
-    confirm2('¿Eliminar este local?','Eliminar',function(ok){
-      if(!ok) return;
-      var d2=getData();
-      d2.locales=d2.locales.filter(function(x){return x.id!==id;});
-      d2.pagos=d2.pagos.filter(function(x){return x.localId!==id;});
-      saveData(d2);
-      document.getElementById('mDetalle').className='overlay';
-      render();
-    });
-  };
-  document.querySelectorAll('.pdel').forEach(function(btn){
-    btn.onclick=function(){
-      var pid=this.getAttribute('data-pid'), lid=this.getAttribute('data-lid');
-      confirm2('¿Eliminar este pago?','Eliminar',function(ok){
-        if(!ok) return;
-        var d2=getData();
-        d2.pagos=d2.pagos.filter(function(x){return x.id!==pid;});
-        saveData(d2);
-        abrirDetalle(lid);
-        render();
-      });
-    };
-  });
-}
-document.getElementById('mDetalle').onclick=function(e){if(e.target===this)this.className='overlay';};
-
-// NUEVO/EDITAR LOCAL
-document.getElementById('btnNuevo').onclick=function(){
-  ['fId','fNom','fArr','fTel','fCed','fCan','fDia','fIni','fFin','fObs'].forEach(function(x){document.getElementById(x).value='';});
-  document.getElementById('mLocalTit').textContent='Nuevo Local';
-  document.getElementById('mLocal').className='overlay open';
-};
-function editarLocal(id){
-  var d=getData(), l=d.locales.find(function(x){return x.id===id;});
-  if(!l) return;
-  document.getElementById('fId').value=l.id;
-  document.getElementById('fNom').value=l.nombre||'';
-  document.getElementById('fArr').value=l.arrendatario||'';
-  document.getElementById('fTel').value=l.telefono||'';
-  document.getElementById('fCed').value=l.cedula||'';
-  document.getElementById('fCan').value=l.canon||'';
-  document.getElementById('fDia').value=l.diaPago||'';
-  document.getElementById('fIni').value=l.inicioContrato||'';
-  document.getElementById('fFin').value=l.finContrato||'';
-  document.getElementById('fObs').value=l.obs||'';
-  document.getElementById('mLocalTit').textContent='Editar Local';
-  document.getElementById('mDetalle').className='overlay';
-  document.getElementById('mLocal').className='overlay open';
-}
-document.getElementById('btnGuardarLocal').onclick=function(){
-  var nom=document.getElementById('fNom').value.trim();
-  if(!nom){toast('⚠️ Escribe el nombre del local');return;}
-  var d=getData(), eid=document.getElementById('fId').value;
-  var loc={id:eid||uid(),nombre:nom,arrendatario:document.getElementById('fArr').value.trim(),telefono:document.getElementById('fTel').value.trim(),cedula:document.getElementById('fCed').value.trim(),canon:document.getElementById('fCan').value,diaPago:document.getElementById('fDia').value,inicioContrato:document.getElementById('fIni').value,finContrato:document.getElementById('fFin').value,obs:document.getElementById('fObs').value.trim()};
-  if(eid){var i=d.locales.findIndex(function(x){return x.id===eid;});if(i!==-1)d.locales[i]=loc;}
-  else d.locales.push(loc);
-  saveData(d);
-  document.getElementById('mLocal').className='overlay';
-  render();
-};
-document.getElementById('btnCancelarLocal').onclick=function(){document.getElementById('mLocal').className='overlay';};
-document.getElementById('mLocal').onclick=function(e){if(e.target===this)this.className='overlay';};
-
-// PAGOS
-function abrirPago(id){
-  var hoy=new Date(), d=getData(), l=d.locales.find(function(x){return x.id===id;});
-  document.getElementById('pLocalId').value=id;
-  document.getElementById('pMes').value=mesHoy();
-  document.getElementById('pFecha').value=hoy.toISOString().split('T')[0];
-  document.getElementById('pMonto').value=l?l.canon:'';
-  document.getElementById('pNota').value='';
-  document.getElementById('pComp').value='';
-  MEDIO='';
-  document.getElementById('btnEf').className='mbtn';
-  document.getElementById('btnTr').className='mbtn';
-  document.getElementById('grpComp').style.display='none';
-  document.getElementById('mDetalle').className='overlay';
-  document.getElementById('mPago').className='overlay open';
-}
-document.getElementById('btnEf').onclick=function(){MEDIO='efectivo';this.className='mbtn ef';document.getElementById('btnTr').className='mbtn';document.getElementById('grpComp').style.display='none';};
-document.getElementById('btnTr').onclick=function(){MEDIO='transferencia';this.className='mbtn tr';document.getElementById('btnEf').className='mbtn';document.getElementById('grpComp').style.display='';};
-document.getElementById('btnGuardarPago').onclick=function(){
-  var mes=document.getElementById('pMes').value, monto=document.getElementById('pMonto').value;
-  if(!mes||!monto){toast('⚠️ Completa mes y monto');return;}
-  if(!MEDIO){toast('⚠️ Selecciona medio de pago');return;}
-  var d=getData(), lid=document.getElementById('pLocalId').value;
-  d.pagos.push({id:uid(),localId:lid,mes:mes,monto:Number(monto),medio:MEDIO,comprobante:document.getElementById('pComp').value.trim(),fecha:document.getElementById('pFecha').value,nota:document.getElementById('pNota').value.trim()});
-  saveData(d);
-  document.getElementById('mPago').className='overlay';
-  abrirDetalle(lid);
-  render();
-};
-document.getElementById('btnCancelarPago').onclick=function(){document.getElementById('mPago').className='overlay';};
-document.getElementById('mPago').onclick=function(e){if(e.target===this)this.className='overlay';};
-
+// ============================================================
 // WHATSAPP
-function enviarWA(id){
-  var d=getData(), l=d.locales.find(function(x){return x.id===id;});
-  if(!l||!l.telefono){toast('⚠️ Sin número de WhatsApp');return;}
+// ============================================================
+function msgWA(l) {
   var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   var hoy=new Date(), mes=meses[hoy.getMonth()], anio=hoy.getFullYear();
-  var msg='Hola '+l.arrendatario+' 👋\n\nLe recuerdo que el arriendo del '+l.nombre+' del mes de '+mes+' '+anio+' está pendiente.\n\n💰 Valor: '+fCOP(l.canon)+'\n📅 Día límite: '+l.diaPago+' de '+mes+'\n\n🏦 Bancolombia Ahorros: 687-761838-34\n👤 Jems Hoyos\n\nGracias! 🙏\n_Jems Hoyos_ · 📱 310 703 6496';
-  window.open('https://wa.me/57'+l.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+  var diasMes=new Date(anio,hoy.getMonth()+1,0).getDate();
+  var diaLimite=Math.min(parseInt(l.diaPago)||30,diasMes);
+  var canon=canonActual(l);
+  return 'Hola '+l.arrendatario+' 👋\n\nLe recuerdo cordialmente que el arriendo del '+l.nombre+' correspondiente al mes de '+mes+' '+anio+' vence este mes.\n\n💰 Valor: '+fmtCOP(canon)+'\n📅 Fecha límite: '+diaLimite+' de '+mes+'\n\n*Medios de pago:*\n🏦 Bancolombia Ahorros: 687-761838-34\n👤 A nombre de: Jems Hoyos\n\nPor favor me confirma y me envía el comprobante cuando realice el pago.\n\nGracias por su puntualidad! 🙏\n\nSaludos,\n_Jems Hoyos_\n_Propietario_\n📱 310 703 6496';
 }
-function cobrarTodos(){
-  var d=getData(), mc=mesHoy();
-  var pagados={};
-  d.pagos.forEach(function(p){if(p.mes===mc)pagados[p.localId]=true;});
-  var pend=d.locales.filter(function(l){return l.arrendatario&&!pagados[l.id]&&l.telefono;});
-  if(pend.length===0){toast('⚠️ No hay pendientes con WhatsApp');return;}
-  var i=0;
-  function enviarSig(){if(i<pend.length){enviarWA(pend[i].id);i++;setTimeout(enviarSig,1500);}}
-  enviarSig();
+function enviarWhatsApp(id) {
+  var d=cargarDatos(), l=d.locales.find(function(x){ return x.id===id; });
+  if(!l||!l.telefono){ mostrarToast('⚠️ Este local no tiene número de WhatsApp.'); return; }
+  window.open('https://wa.me/57'+l.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(msgWA(l)),'_blank');
 }
-
-// SHEETS con JSONP para evitar CORS
-function jsonpRequest(url, callback) {
-  var cbName = 'cb_' + Date.now();
-  var script = document.createElement('script');
-  window[cbName] = function(data) {
-    delete window[cbName];
-    document.body.removeChild(script);
-    callback(data);
-  };
-  script.src = url + (url.indexOf('?')>=0?'&':'?') + 'callback=' + cbName + '&t=' + Date.now();
-  script.onerror = function() {
-    delete window[cbName];
-    document.body.removeChild(script);
-    callback(null);
-  };
-  document.body.appendChild(script);
+function abrirCobrarTodos() {
+  var d=cargarDatos(), mc=mesActual();
+  var pendientes=d.locales.filter(function(l){ return l.arrendatario&&!d.pagos.some(function(p){ return p.localId===l.id&&p.mes===mc; }); });
+  var total=pendientes.reduce(function(s,l){ return s+(canonActual(l)||0); },0);
+  var html='<div class="modal-handle"></div><div class="modal-title">💬 Cobrar por WhatsApp</div>';
+  html += '<div style="background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);border-radius:12px;padding:14px;margin-bottom:20px;text-align:center"><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Total por cobrar</div><div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.8rem;color:#25D366">'+fmtCOP(total)+'</div><div style="font-size:.75rem;color:var(--muted);margin-top:4px">'+pendientes.length+' arrendatario'+(pendientes.length!==1?'s':'')+' pendiente'+(pendientes.length!==1?'s':'')+'</div></div>';
+  if(pendientes.length===0) { html += '<div class="empty"><div class="icon">🎉</div><p>Todos al día!</p></div>'; }
+  else {
+    pendientes.forEach(function(l){
+      html += '<div class="cobro-row"><div><div style="font-weight:600;font-size:.9rem">'+l.arrendatario+'</div><div style="font-size:.72rem;color:var(--muted)">'+l.nombre+' · '+fmtCOP(canonActual(l))+' · Día '+(l.diaPago||'?')+'</div></div><button class="btn-sm btn-wa" style="flex:0;padding:8px 14px" onclick="enviarWhatsApp(\''+l.id+'\')">💬 Enviar</button></div>';
+    });
+  }
+  html += '<button class="btn-secondary" onclick="cerrarModal(\'modalCobrar\')">Cerrar</button>';
+  document.getElementById('modalCobrarContent').innerHTML = html;
+  document.getElementById('modalCobrar').classList.add('active');
 }
 
-document.getElementById('btnGuardar').onclick=function(){
-  var d=getData();
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}})
-  .then(function(r){return r.json();})
-  .then(function(res){
-    if(res&&res.ok) toast('✅ Guardado en la nube');
-    else toast('⚠️ Error al guardar');
-  })
-  .catch(function(){toast('⚠️ Sin conexión');});
-};
+// ============================================================
+// MODAL LOCAL
+// ============================================================
+function abrirModalNuevoLocal() {
+  ['f_editId','f_nombre','f_arrendatario','f_tel','f_cedula','f_canon','f_diapago','f_inicio','f_fin','f_obs','f_incremento'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('f_mes_incremento').value='';
+  document.getElementById('modalLocalTitulo').textContent='Nuevo Local';
+  document.getElementById('modalLocal').classList.add('active');
+}
+function editarLocal(id) {
+  var d=cargarDatos(), l=d.locales.find(function(x){ return x.id===id; });
+  if(!l) return;
+  document.getElementById('f_editId').value=l.id;
+  document.getElementById('f_nombre').value=l.nombre||'';
+  document.getElementById('f_arrendatario').value=l.arrendatario||'';
+  document.getElementById('f_tel').value=l.telefono||'';
+  document.getElementById('f_cedula').value=l.cedula||'';
+  document.getElementById('f_canon').value=l.canon||'';
+  document.getElementById('f_diapago').value=l.diaPago||'';
+  document.getElementById('f_inicio').value=l.inicioContrato||'';
+  document.getElementById('f_fin').value=l.finContrato||'';
+  document.getElementById('f_obs').value=l.obs||'';
+  document.getElementById('f_incremento').value=l.incrementoPct||'';
+  document.getElementById('f_mes_incremento').value=l.mesIncremento||'';
+  document.getElementById('modalLocalTitulo').textContent='Editar Local';
+  cerrarModal('modalDetalle');
+  document.getElementById('modalLocal').classList.add('active');
+}
+function guardarLocal() {
+  var nombre=document.getElementById('f_nombre').value.trim();
+  if(!nombre){ mostrarToast('⚠️ Escribe el nombre del local'); return; }
+  var d=cargarDatos(), editId=document.getElementById('f_editId').value;
+  var local={id:editId||uid(),nombre:nombre,arrendatario:document.getElementById('f_arrendatario').value.trim(),telefono:document.getElementById('f_tel').value.trim(),cedula:document.getElementById('f_cedula').value.trim(),canon:document.getElementById('f_canon').value,diaPago:document.getElementById('f_diapago').value,inicioContrato:document.getElementById('f_inicio').value,finContrato:document.getElementById('f_fin').value,obs:document.getElementById('f_obs').value.trim(),incrementoPct:document.getElementById('f_incremento').value,mesIncremento:document.getElementById('f_mes_incremento').value};
+  if(editId){ var i=d.locales.findIndex(function(x){ return x.id===editId; }); if(i!==-1) d.locales[i]=local; }
+  else d.locales.push(local);
+  guardarDatos(d); cerrarModal('modalLocal'); renderAll();
+}
 
-document.getElementById('btnCargar').onclick=function(){
-  toast('🔄 Cargando...');
-  jsonpRequest(SCRIPT_URL, function(data){
-    if(!data){toast('⚠️ Error de conexión');return;}
-    if(data.locales&&data.locales.length>0){
-      data.pagos=data.pagos||[];
-      data.deudas=data.deudas||[];
-      saveData(data);render();
-      toast('✅ Datos actualizados');
-    } else {toast('⚠️ No hay datos en la nube');}
+// ============================================================
+// DETALLE LOCAL
+// ============================================================
+function verDetalle(id) {
+  var d=cargarDatos(), l=d.locales.find(function(x){ return x.id===id; });
+  if(!l) return;
+  var pagosLocal=d.pagos.filter(function(p){ return p.localId===id; }).sort(function(a,b){ return b.mes.localeCompare(a.mes); });
+  var meses=mesesEnLocal(l);
+  var canonHoy=canonActual(l);
+  var canonNext=l.incrementoPct?canonProximoAnio(l):null;
+  var msNombres=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var html='<div class="modal-handle"></div><div style="margin-bottom:20px">';
+  html += '<div class="modal-title">'+l.nombre+(meses!==null?'<span class="meses-badge">'+meses+' mes'+(meses!==1?'es':'')+' en el local</span>':'')+'</div>';
+  html += '<div style="color:var(--muted);font-size:.85rem;margin-top:-12px;margin-bottom:14px">'+(l.arrendatario||'Sin arrendatario')+'</div>';
+  html += '<div class="local-info" style="gap:12px">';
+  if(l.telefono) html += '<div class="info-item"><div class="lbl">WhatsApp</div><div class="val">'+l.telefono+'</div></div>';
+  if(l.cedula) html += '<div class="info-item"><div class="lbl">Cédula</div><div class="val">'+l.cedula+'</div></div>';
+  if(canonHoy) html += '<div class="info-item"><div class="lbl">Canon actual</div><div class="val">'+fmtCOP(canonHoy)+'</div></div>';
+  if(l.diaPago) html += '<div class="info-item"><div class="lbl">Día de pago</div><div class="val">Día '+l.diaPago+'</div></div>';
+  if(l.inicioContrato) html += '<div class="info-item"><div class="lbl">Inicio</div><div class="val">'+formatFecha(l.inicioContrato)+'</div></div>';
+  if(l.finContrato) html += '<div class="info-item"><div class="lbl">Fin contrato</div><div class="val">'+formatFecha(l.finContrato)+'</div></div>';
+  if(l.obs) html += '<div class="info-item" style="grid-column:1/-1"><div class="lbl">NICs / Notas</div><div class="val">'+l.obs+'</div></div>';
+  html += '</div>';
+  if(l.incrementoPct) {
+    html += '<div class="incremento-box" style="margin-top:14px"><div class="ib-title">📈 Incremento anual</div>';
+    html += '<div class="incremento-row"><span class="ir-label">Porcentaje</span><span class="ir-val">'+l.incrementoPct+'%</span></div>';
+    html += '<div class="incremento-row"><span class="ir-label">Mes de aplicación</span><span class="ir-val">'+(l.mesIncremento?msNombres[parseInt(l.mesIncremento)-1]:'—')+'</span></div>';
+    html += '<div class="incremento-row"><span class="ir-label">Canon actual</span><span class="ir-val">'+fmtCOP(canonHoy)+'</span></div>';
+    if(canonNext) html += '<div class="incremento-row"><span class="ir-label">Próximo incremento</span><span class="ir-val" style="color:var(--accent)">'+fmtCOP(canonNext)+'</span></div>';
+    html += '</div>';
+  }
+  html += '<div class="detalle-actions">';
+  if(l.arrendatario) html += '<button class="btn-sm btn-pago" onclick="abrirModalPago(\''+id+'\')">💵 Pago</button>';
+  if(l.arrendatario&&l.telefono) html += '<button class="btn-sm btn-wa" onclick="enviarWhatsApp(\''+id+'\')">💬 WhatsApp</button>';
+  html += '<button class="btn-sm btn-edit" onclick="editarLocal(\''+id+'\')">✏️ Editar</button>';
+  html += '<button class="btn-sm btn-del" onclick="pedirEliminarLocal(\''+id+'\')">🗑️</button>';
+  html += '</div></div>';
+  html += '<div class="section-title">Historial de pagos</div><div class="pagos-list">';
+  if(pagosLocal.length===0) { html += '<div style="color:var(--muted);font-size:.85rem;padding:12px 0">Sin pagos registrados</div>'; }
+  else {
+    pagosLocal.forEach(function(p){
+      var tagMedio=p.medio?'<span class="tag-medio '+(p.medio==='efectivo'?'tag-efectivo':'tag-transferencia')+'">'+(p.medio==='efectivo'?'💵 Efectivo':'🏦 Transfer.')+'</span>':'';
+      var comprobante=p.comprobante?'<span style="font-size:.68rem;color:var(--muted)"> · Comp: '+p.comprobante+'</span>':'';
+      html += '<div class="pago-item"><div><div class="pago-mes">'+formatMes(p.mes)+tagMedio+'</div><div class="pago-fecha">'+formatFecha(p.fecha)+comprobante+(p.nota?' · '+p.nota:'')+'</div></div><div style="display:flex;align-items:center;gap:6px"><span class="pago-monto">'+fmtCOP(p.monto)+'</span><button class="del-pago" onclick="pedirEliminarPago(\''+p.id+'\',\''+id+'\')">×</button></div></div>';
+    });
+  }
+  html += '</div>';
+  document.getElementById('modalDetalleContent').innerHTML = html;
+  document.getElementById('modalDetalle').classList.add('active');
+}
+
+function pedirEliminarLocal(id) {
+  mostrarConfirm('¿Eliminar este local? También se borrarán sus pagos.', 'Eliminar', function(ok){
+    if(!ok) return;
+    var d=cargarDatos();
+    d.locales=d.locales.filter(function(l){ return l.id!==id; });
+    d.pagos=d.pagos.filter(function(p){ return p.localId!==id; });
+    guardarDatos(d); cerrarModal('modalDetalle'); renderAll();
   });
-};
-
-// DATOS INICIALES
-function init(){
-  var d=getData();
-  if(d.locales.length===0){
-    d.locales=[
-      {id:uid(),nombre:'LOCAL #1',arrendatario:'Jose Chica',telefono:'3126849912',cedula:'',canon:500000,diaPago:'15',inicioContrato:'',finContrato:'',obs:'NIC: 7911206'},
-      {id:uid(),nombre:'LOCAL #2',arrendatario:'MILCARNES carnicería',telefono:'3217789612',cedula:'',canon:500000,diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC: 7911208'},
-      {id:uid(),nombre:'LOCAL #3',arrendatario:'DYABOO licores',telefono:'3004023337',cedula:'',canon:1000000,diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC: 7911210 | NIC: 7911217'},
-      {id:uid(),nombre:'LOCAL #4',arrendatario:'tienda la FAVORITA del hogar',telefono:'3107036496',cedula:'',canon:1000000,diaPago:'30',inicioContrato:'',finContrato:'',obs:'NIC: 7911213'},
-      {id:uid(),nombre:'LOCAL #5',arrendatario:'DIMONES E ENVIA',telefono:'3226120250',cedula:'',canon:1200000,diaPago:'10',inicioContrato:'',finContrato:'',obs:'NIC: 7911216 | NIC: 7911214'},
-      {id:uid(),nombre:'APTO #1',arrendatario:'ALMACEN & TALLER M&G',telefono:'3017875737',cedula:'',canon:300000,diaPago:'20',inicioContrato:'',finContrato:'',obs:'NIC: 7927773'},
-      {id:uid(),nombre:'APTO #2',arrendatario:'ASADOS EL KUKO',telefono:'3135051034',cedula:'',canon:350000,diaPago:'15',inicioContrato:'',finContrato:'',obs:'NIC: 7927787'},
-      {id:uid(),nombre:'APTO #3',arrendatario:'DONDE MARY',telefono:'3219032376',cedula:'',canon:350000,diaPago:'13',inicioContrato:'',finContrato:'',obs:'NIC: 7927789'},
-    ];
-    if(!d.pagos) d.pagos=[];
-    if(!d.deudas) d.deudas=[];
-    saveData(d);
-  }
-  if(!d.deudas) d.deudas=[];
-  if(d.deudas.length===0){
-    d.deudas=[
-      {id:uid(),tipo:'propia',nombre:'Jose Perez',total:63000000,cuota:1800000,interes:'2.9',dia:'10',pagadas:'0',totalCuotas:'',obs:''},
-      {id:uid(),tipo:'propia',nombre:'Maria Luz',total:48000000,cuota:1200000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
-      {id:uid(),tipo:'propia',nombre:'Katy mujer de Jos',total:46000000,cuota:1150000,interes:'2.5',dia:'16',pagadas:'0',totalCuotas:'',obs:''},
-      {id:uid(),tipo:'propia',nombre:'Papa D Dario',total:34000000,cuota:850000,interes:'2.5',dia:'8',pagadas:'0',totalCuotas:'',obs:''},
-      {id:uid(),tipo:'propia',nombre:'Sra Nuris',total:15000000,cuota:300000,interes:'2.0',dia:'22',pagadas:'0',totalCuotas:'',obs:''},
-      {id:uid(),tipo:'propia',nombre:'Bancolombia',total:123309770,cuota:6250000,interes:'3.5',dia:'13',pagadas:'20',totalCuotas:'48',obs:'Crédito consumo'},
-      {id:uid(),tipo:'propia',nombre:'Mundo Mujer',total:13381744,cuota:1120863,interes:'26.205',dia:'5',pagadas:'17',totalCuotas:'30',obs:'CREDINegocios - Maria Luz Hoyos - Vence 05/05/2027'},
-      {id:uid(),tipo:'me-deben',nombre:'Edinson',total:10000000,cuota:'',interes:'2.5',dia:'3',pagadas:'0',totalCuotas:'',obs:'Me debe'},
-      {id:uid(),tipo:'me-deben',nombre:'Clara Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3234631973'},
-      {id:uid(),tipo:'me-deben',nombre:'Olimpia Perez',total:33622,cuota:33622,interes:'',dia:'11',pagadas:'0',totalCuotas:'',obs:'Parte DirecTV',telefono:'3127170071'},
-    ];
-    saveData(d);
-  }
-  render();
 }
 
-init();
-</script>
-</body>
-</html>
+// ============================================================
+// MEDIO DE PAGO
+// ============================================================
+var medioSeleccionado='';
+function selMedio(m) {
+  medioSeleccionado=m;
+  document.getElementById('p_medio').value=m;
+  document.getElementById('btn_efectivo').className='medio-btn'+(m==='efectivo'?' active-efectivo':'');
+  document.getElementById('btn_transferencia').className='medio-btn'+(m==='transferencia'?' active-transferencia':'');
+  document.getElementById('grupo_comprobante').style.display=m==='transferencia'?'':'none';
+}
+
+// ============================================================
+// PAGOS
+// ============================================================
+function abrirModalPago(id) {
+  var hoy=new Date(), d=cargarDatos(), l=d.locales.find(function(x){ return x.id===id; });
+  document.getElementById('p_localId').value=id;
+  document.getElementById('p_mes').value=mesActual();
+  document.getElementById('p_fecha').value=hoy.toISOString().split('T')[0];
+  document.getElementById('p_nota').value='';
+  document.getElementById('p_comprobante').value='';
+  document.getElementById('p_monto').value=l?canonActual(l):'';
+  medioSeleccionado='';
+  document.getElementById('p_medio').value='';
+  document.getElementById('btn_efectivo').className='medio-btn';
+  document.getElementById('btn_transferencia').className='medio-btn';
+  document.getElementById('grupo_comprobante').style.display='none';
+  cerrarModal('modalDetalle');
+  document.getElementById('modalPago').classList.add('active');
+}
+function guardarPago() {
+  var mes=document.getElementById('p_mes').value, monto=document.getElementById('p_monto').value;
+  if(!mes||!monto){ mostrarToast('⚠️ Completa el mes y el monto'); return; }
+  if(!medioSeleccionado){ mostrarToast('⚠️ Selecciona el medio de pago'); return; }
+  var d=cargarDatos(), localId=document.getElementById('p_localId').value;
+  var existe=d.pagos.find(function(p){ return p.localId===localId && p.mes===mes; });
+  if(existe) {
+    mostrarConfirm('Ya hay un pago para '+formatMes(mes)+'. ¿Agregar otro?', 'Agregar', function(ok){
+      if(!ok) return;
+      _guardarPagoFinal(d, localId, mes, monto);
+    });
+  } else {
+    _guardarPagoFinal(d, localId, mes, monto);
+  }
+}
+function _guardarPagoFinal(d, localId, mes, monto) {
+  d.pagos.push({id:uid(),localId:localId,mes:mes,monto:Number(monto),medio:medioSeleccionado,comprobante:document.getElementById('p_comprobante').value.trim(),fecha:document.getElementById('p_fecha').value,nota:document.getElementById('p_nota').value.trim()});
+  guardarDatos(d); cerrarModal('modalPago'); verDetalle(localId); renderAll();
+}
+function pedirEliminarPago(pagoId, localId) {
+  mostrarConfirm('¿Eliminar este pago?', 'Eliminar', function(ok){
+    if(!ok) return;
+    var d=cargarDatos();
+    d.pagos=d.pagos.filter(function(p){ return p.id!==pagoId; });
+    guardarDatos(d); verDetalle(localId); renderAll();
+  });
+}
+
+function cerrarModal(id){ document.getElementById(id).classList.remove('active'); }
+function cerrarSiOverlay(e,id){ if(e.target===document.getElementById(id)) cerrarModal(id); }
+
+// ============================================================
+// DEUDAS
+// ============================================================
+function cargarDatosDeudas() {
+  var d=cargarDatos();
+  if(!d.deudas) d.deudas=[];
+  if(!d.pagosDeuda) d.pagosDeuda=[];
+  return d;
+}
+
+function renderDeudas() {
+  var d=cargarDatosDeudas(), hoy=new Date();
+  var mc=mesActual();
+  var propias=d.deudas.filter(function(x){ return x.tipo==='propia'; });
+  var meDeben=d.deudas.filter(function(x){ return x.tipo==='me-deben'; });
+  var recordatorios=d.deudas.filter(function(x){ return x.tipo==='recordatorio'; });
+  var totalDeuda=propias.reduce(function(s,x){ return s+(Number(x.total)||0); },0);
+  var totalCuotasMes=propias.reduce(function(s,x){ return s+(Number(x.cuota)||0); },0);
+  var totalArriendos=d.locales.filter(function(l){ return l.arrendatario; }).reduce(function(s,l){ return s+(canonActual(l)||0); },0);
+  var libre=totalArriendos-totalCuotasMes;
+  var html='<div class="analisis-grid">';
+  html += '<div class="an-card" style="display:flex;justify-content:space-between;align-items:center"><div class="label" style="margin:0">Total deuda</div><div class="value" style="color:var(--danger);font-size:1rem">'+fmtCOP(totalDeuda)+'</div></div>';
+  html += '<div class="an-card" style="display:flex;justify-content:space-between;align-items:center"><div class="label" style="margin:0">Cuotas este mes</div><div class="value" style="color:var(--danger);font-size:1rem">'+fmtCOP(totalCuotasMes)+'</div></div>';
+  html += '<div class="an-card" style="display:flex;justify-content:space-between;align-items:center"><div class="label" style="margin:0">Arriendos mes</div><div class="value" style="color:var(--success);font-size:1rem">'+fmtCOP(totalArriendos)+'</div></div>';
+  html += '<div class="an-card" style="display:flex;justify-content:space-between;align-items:center"><div class="label" style="margin:0">Libre al mes</div><div class="value" style="color:'+(libre>=0?'var(--success)':'var(--danger)')+';font-size:1rem">'+fmtCOP(libre)+'</div></div>';
+  html += '</div>';
+  html += '<button class="btn-cobrar-todos" style="background:var(--danger)" onclick="abrirModalDeuda()">+ Nueva deuda / Me deben / Recordatorio</button>';
+
+  function cardDeuda(x, claseCard) {
+    var pagadas=Number(x.pagadas)||0, totalC=Number(x.totalCuotas)||0;
+    var faltan=totalC>0?totalC-pagadas:null;
+    var pct=totalC>0?Math.min(100,Math.round(pagadas/totalC*100)):0;
+    var pagaHoyD=x.dia&&new Date().getDate()===parseInt(x.dia);
+    var estado=getEstadoDeudaMes(x.id);
+    var badgeEstado=estado==='pagado'
+      ? '<span class="badge pagado">✓ Pagado</span>'
+      : (pagaHoyD?'<span class="badge hoy">Paga hoy</span>':'<span class="badge pendiente">Pendiente</span>');
+
+    var h='<div class="deuda-card '+claseCard+'" onclick="verDetalleDeuda(\''+x.id+'\')">';
+    h += '<div class="local-header"><div><div class="local-nombre">'+x.nombre+(pagaHoyD&&estado!=='pagado'?'<span class="meses-badge">Hoy</span>':'')+'</div><div class="local-num">'+(x.interes?x.interes+'% mensual':'')+'</div></div>'+badgeEstado+'</div>';
+    h += '<div class="local-info">';
+    if(x.cuota) h += '<div class="info-item"><div class="lbl">Cuota</div><div class="val">'+fmtCOP(x.cuota)+'</div></div>';
+    if(x.dia) h += '<div class="info-item"><div class="lbl">Día pago</div><div class="val">Día '+x.dia+'</div></div>';
+    if(x.total) h += '<div class="info-item"><div class="lbl">Deuda total</div><div class="val">'+fmtCOP(x.total)+'</div></div>';
+    if(faltan!==null) h += '<div class="info-item"><div class="lbl">Pagadas</div><div class="val">'+pagadas+' de '+totalC+'</div></div>';
+    h += '</div>';
+    if(totalC>0) h += '<div class="fin-bar-wrap"><div class="fin-bar" style="width:'+pct+'%;background:linear-gradient(90deg,var(--success),var(--accent))"></div></div>';
+    h += '</div>';
+    return h;
+  }
+
+  if(propias.length>0) {
+    html += '<div class="section-title">💸 Lo que debo</div>';
+    propias.forEach(function(x){ html += cardDeuda(x,'deuda-propia'); });
+  }
+  if(meDeben.length>0) {
+    html += '<div class="section-title" style="margin-top:16px">💰 Me deben</div>';
+    meDeben.forEach(function(x){ html += cardDeuda(x,'me-deben'); });
+  }
+  if(recordatorios.length>0) {
+    html += '<div class="section-title" style="margin-top:16px">🔔 Recordatorios</div>';
+    recordatorios.forEach(function(x){ html += cardDeuda(x,'recordatorio'); });
+  }
+  if(d.deudas.length===0) html += '<div class="empty"><div class="icon">✅</div><p>Sin deudas registradas.</p></div>';
+  document.getElementById('tab-deudas').innerHTML = html;
+}
+
+function abrirModalDeuda() {
+  ['d_editId','d_nombre','d_total','d_cuota','d_interes','d_dia','d_pagadas','d_totalcuotas','d_obs','d_tel_deuda'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('d_tipo').value='propia';
+  document.getElementById('modalDeudaTitulo').textContent='Nueva Deuda';
+  document.getElementById('modalDeuda').classList.add('active');
+}
+function editarDeuda(id) {
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x) return;
+  document.getElementById('d_editId').value=x.id;
+  document.getElementById('d_tipo').value=x.tipo||'propia';
+  document.getElementById('d_nombre').value=x.nombre||'';
+  document.getElementById('d_total').value=x.total||'';
+  document.getElementById('d_cuota').value=x.cuota||'';
+  document.getElementById('d_interes').value=x.interes||'';
+  document.getElementById('d_dia').value=x.dia||'';
+  document.getElementById('d_pagadas').value=x.pagadas||'';
+  document.getElementById('d_totalcuotas').value=x.totalCuotas||'';
+  document.getElementById('d_obs').value=x.obs||'';
+  document.getElementById('d_tel_deuda').value=x.telefono||'';
+  document.getElementById('modalDeudaTitulo').textContent='Editar';
+  cerrarModal('modalDeudaDetalle');
+  document.getElementById('modalDeuda').classList.add('active');
+}
+function guardarDeuda() {
+  var nombre=document.getElementById('d_nombre').value.trim();
+  if(!nombre){ mostrarToast('⚠️ Escribe el nombre'); return; }
+  var d=cargarDatosDeudas();
+  if(!d.deudas) d.deudas=[];
+  var editId=document.getElementById('d_editId').value;
+  var item={id:editId||uid(),tipo:document.getElementById('d_tipo').value,nombre:nombre,total:document.getElementById('d_total').value,cuota:document.getElementById('d_cuota').value,interes:document.getElementById('d_interes').value,dia:document.getElementById('d_dia').value,pagadas:document.getElementById('d_pagadas').value,totalCuotas:document.getElementById('d_totalcuotas').value,obs:document.getElementById('d_obs').value.trim(),telefono:document.getElementById('d_tel_deuda').value.trim()};
+  if(editId){ var i=d.deudas.findIndex(function(x){ return x.id===editId; }); if(i!==-1) d.deudas[i]=item; }
+  else d.deudas.push(item);
+  guardarDatos(d); cerrarModal('modalDeuda'); renderAll();
+}
+
+function verDetalleDeuda(id) {
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x) return;
+  var pagadas=Number(x.pagadas)||0, totalC=Number(x.totalCuotas)||0;
+  var faltan=totalC>0?totalC-pagadas:null;
+  var pct=totalC>0?Math.min(100,Math.round(pagadas/totalC*100)):0;
+  var interesTotal=x.interes&&x.total?Math.round(Number(x.total)*Number(x.interes)/100):0;
+  var estadoMes=getEstadoDeudaMes(id);
+  var mc=mesActual();
+  var mesesNombres=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var mesLabel=mesesNombres[parseInt(mc.split('-')[1])-1]+' '+mc.split('-')[0];
+
+  var html='<div class="modal-handle"></div><div class="modal-title">'+x.nombre+'</div>';
+
+  // Estado mensual
+  html += '<div class="estado-mes-row">';
+  html += '<span class="estado-mes-label">Estado '+mesLabel+'</span>';
+  html += '<div class="estado-btns">';
+  html += '<button class="btn-estado '+(estadoMes==='pagado'?'pagado-act':'inact')+'" onclick="toggleEstadoDeuda(\''+id+'\',\'pagado\');event.stopPropagation()">✓ Pagado</button>';
+  html += '<button class="btn-estado '+(estadoMes==='pendiente'?'pendiente-act':'inact')+'" onclick="toggleEstadoDeuda(\''+id+'\',\'pendiente\');event.stopPropagation()">⏳ Pendiente</button>';
+  html += '</div></div>';
+
+  html += '<div class="local-info" style="gap:12px;margin-top:14px;margin-bottom:16px">';
+  if(x.total) html += '<div class="info-item"><div class="lbl">Deuda total</div><div class="val">'+fmtCOP(x.total)+'</div></div>';
+  if(x.cuota) html += '<div class="info-item"><div class="lbl">Cuota mensual</div><div class="val">'+fmtCOP(x.cuota)+'</div></div>';
+  if(x.interes) html += '<div class="info-item"><div class="lbl">Interés mensual</div><div class="val">'+x.interes+'%</div></div>';
+  if(interesTotal) html += '<div class="info-item"><div class="lbl">Interés en $</div><div class="val" style="color:var(--danger)">'+fmtCOP(interesTotal)+'/mes</div></div>';
+  if(x.dia) html += '<div class="info-item"><div class="lbl">Día de pago</div><div class="val">Día '+x.dia+'</div></div>';
+  if(faltan!==null) html += '<div class="info-item"><div class="lbl">Cuotas pagadas</div><div class="val">'+pagadas+' de '+totalC+'</div></div><div class="info-item"><div class="lbl">Cuotas que faltan</div><div class="val" style="color:var(--danger)">'+faltan+'</div></div>';
+  if(x.obs) html += '<div class="info-item" style="grid-column:1/-1"><div class="lbl">Notas</div><div class="val">'+x.obs+'</div></div>';
+  html += '</div>';
+
+  if(totalC>0) html += '<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:6px"><span>Progreso</span><span>'+pct+'% pagado</span></div><div class="fin-bar-wrap"><div class="fin-bar" style="width:'+pct+'%"></div></div></div>';
+
+  // Alarma
+  if(x.dia) {
+    html += '<div class="alarm-row"><span class="alarm-label">🔔 Alarma día '+x.dia+' de cada mes — 8:00 a.m.</span><button class="btn-alarm" onclick="programarAlarmaDeuda(\''+id+'\');event.stopPropagation()">Activar</button></div>';
+  }
+
+  html += '<div class="detalle-actions" style="margin-top:12px">';
+  html += '<button class="btn-sm btn-pago" onclick="registrarCuota(\''+id+'\')">✅ Cuota pagada</button>';
+  if(!x.totalCuotas) html += '<button class="btn-sm" style="background:rgba(245,166,35,.15);color:var(--accent);flex:1" onclick="registrarAbono(\''+id+'\')">💰 Abono</button>';
+  if(x.telefono) html += '<button class="btn-sm btn-wa" onclick="enviarWADeuda(\''+id+'\')">💬 WhatsApp</button>';
+  html += '<button class="btn-sm btn-edit" onclick="editarDeuda(\''+id+'\')">✏️ Editar</button>';
+  html += '<button class="btn-sm btn-del" onclick="pedirEliminarDeuda(\''+id+'\')">🗑️</button>';
+  html += '</div>';
+
+  if(!x.totalCuotas&&x.interes) {
+    html += '<div style="margin-top:14px;background:var(--surface2);border-radius:12px;padding:14px"><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Simulación de abono</div><div style="display:flex;gap:8px;align-items:center"><input type="number" id="sim_abono_'+id+'" placeholder="Valor del abono" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.85rem;outline:none"><div style="display:flex;flex-direction:column;gap:6px"><button onclick="simularAbono(\''+id+'\')" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:.72rem;cursor:pointer">Ver simulacion</button><button onclick="registrarAbono(\''+id+'\')" style="background:var(--accent);color:#111;border:none;border-radius:8px;padding:6px 10px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:.72rem;cursor:pointer">Abonar</button></div></div><div id="sim_resultado_'+id+'" style="margin-top:8px;font-size:.78rem;color:var(--success)"></div></div>';
+  }
+
+  document.getElementById('modalDeudaDetalleContent').innerHTML = html;
+  document.getElementById('modalDeudaDetalle').classList.add('active');
+}
+
+function registrarCuota(id) {
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x) return;
+  x.pagadas=(Number(x.pagadas)||0)+1;
+  setEstadoDeudaMes(id,'pagado');
+  guardarDatos(d); cerrarModal('modalDeudaDetalle'); verDetalleDeuda(id); renderAll();
+}
+function enviarWADeuda(id) {
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x||!x.telefono){ mostrarToast('⚠️ Sin número de WhatsApp'); return; }
+  var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var hoy=new Date(), mes=meses[hoy.getMonth()], anio=hoy.getFullYear();
+  var msg='Hola '+x.nombre+' 👋\n\nLe recuerdo que su parte del servicio DirecTV correspondiente al mes de '+mes+' '+anio+' está pendiente.\n\n💰 Valor: '+fmtCOP(x.cuota)+'\n📅 Fecha límite: '+x.dia+' de '+mes+'\n\n*Medios de pago:*\n🏦 Bancolombia Ahorros: 687-761838-34\n👤 A nombre de: Jems Hoyos\n\nPor favor me confirma cuando realice el pago.\n\nGracias! 🙏\n_Jems Hoyos_\n📱 310 703 6496';
+  window.open('https://wa.me/57'+x.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function registrarAbono(id) {
+  var inp=document.getElementById('sim_abono_'+id);
+  var monto=inp?inp.value:null;
+  if(!monto||isNaN(monto)){ mostrarToast('⚠️ Escriba el valor del abono y toque Abonar'); return; }
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x) return;
+  var abono=Number(monto);
+  var nuevoTotal=Math.max(0,(Number(x.total)||0)-abono);
+  var nuevoInteres=x.interes?Math.round(nuevoTotal*Number(x.interes)/100):0;
+  x.total=nuevoTotal;
+  if(nuevoInteres>0) x.cuota=nuevoInteres;
+  guardarDatos(d); cerrarModal('modalDeudaDetalle'); verDetalleDeuda(id); renderAll();
+  mostrarToast('✅ Abono registrado — Nueva deuda: $'+nuevoTotal.toLocaleString('es-CO'));
+}
+function simularAbono(id) {
+  var d=cargarDatosDeudas(), x=d.deudas.find(function(i){ return i.id===id; });
+  if(!x) return;
+  var abono=Number(document.getElementById('sim_abono_'+id).value);
+  if(!abono||isNaN(abono)) return;
+  var nuevoTotal=Math.max(0,(Number(x.total)||0)-abono);
+  var nuevoInteres=x.interes?Math.round(nuevoTotal*Number(x.interes)/100):0;
+  var ahorroMensual=(Number(x.cuota)||0)-nuevoInteres;
+  document.getElementById('sim_resultado_'+id).innerHTML='Nuevo capital: <strong>$'+nuevoTotal.toLocaleString('es-CO')+'</strong> · Nuevo interés: <strong>$'+nuevoInteres.toLocaleString('es-CO')+'/mes</strong> · Ahorro: <strong style="color:var(--success)">$'+ahorroMensual.toLocaleString('es-CO')+'/mes</strong>';
+}
+function pedirEliminarDeuda(id) {
+  mostrarConfirm('¿Eliminar esta deuda?', 'Eliminar', function(ok){
+    if(!ok) return;
